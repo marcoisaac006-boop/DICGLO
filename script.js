@@ -81,8 +81,15 @@ class DicgloApp {
     }
 
     initEventListeners() {
-        this.startBtn.addEventListener('click', () => this.showScreen('games'));
-        this.creditsBtn.addEventListener('click', () => this.showScreen('credits'));
+        this.startBtn.addEventListener('click', () => {
+            this.welcomeVideo.pause();
+            this.showScreen('games');
+        });
+
+        this.creditsBtn.addEventListener('click', () => {
+            this.welcomeVideo.pause();
+            this.showScreen('credits');
+        });
 
         this.backBtn.addEventListener('click', () => {
             this.showScreen('welcome');
@@ -361,5 +368,7 @@ class DicgloApp {
 document.addEventListener('DOMContentLoaded', () => {
     const app = new DicgloApp();
 });
+
+
 
 
