@@ -83,14 +83,9 @@ class DicgloApp {
     initEventListeners() {
         this.startBtn.addEventListener('click', () => this.showScreen('games'));
         this.creditsBtn.addEventListener('click', () => this.showScreen('credits'));
+
         this.backBtn.addEventListener('click', () => {
             this.showScreen('welcome');
-            try {
-                this.welcomeVideo.currentTime = 0;
-                this.welcomeVideo.play();
-            } catch(e) {
-                console.error("Error al intentar reproducir el video:", e);
-            }
         });
 
         this.backGameBtn.addEventListener('click', () => {
@@ -366,3 +361,5 @@ class DicgloApp {
 document.addEventListener('DOMContentLoaded', () => {
     const app = new DicgloApp();
 });
+
+
