@@ -1,123 +1,225 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DICGLO - Juego Gramatical</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DICGLOs</title>
+  <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
-    <div class="container">
-        <!-- Pantalla de Inicio -->
-        <div class="screen active" id="welcome-screen">
-            <header>
-                <h1 class="logo">¡Bienvenidos a DICGLO!<span class="emoji"></span></h1>
-                <p class="subtitle">Aprende sobre verbos, sujeto y objeto directo</p>
-            </header>
-            <main>
-                <div class="video-container">
-                    <div class="video-placeholder">
-                        <!-- Video real: se cargará por JS desde la variable interna -->
-                        <video id="welcome-video" controls preload="metadata" playsinline>
-                            Tu navegador no soporta el elemento <code>video</code>.
-                        </video>
-                        <!-- Superposición informativa (mantengo la estética original) -->
-                        <div class="video-overlay" id="video-overlay">
-                            <div class="play-icon">▶️</div>
-                            <h2 id="overlay-title">¡Bienvenidos a DICGLO!</h2>
-                        </div>
-                    </div>
-                </div>
-                <div class="start-section">
-                    <!-- Los botones se mostrarán sólo cuando termine el video (si hay uno). -->
-                    <div class="button-container">
-                        <button class="btn start-btn hidden" id="start-btn">Empezar Juego</button>
-                        <button class="btn credits-btn hidden" id="credits-btn">Ver Créditos</button>
-                    </div>
-                </div>
-            </main>
-        </div>
-        <!-- Pantalla de Créditos -->
-        <div class="screen" id="credits-screen">
-            <div class="credits-container">
-                <h2>Este proyecto ha sido desarrollado por:</h2>
-                <p>Estudiantes del ciclo V de la especialidad de Comunicación del I.E.S.P.P.P.</p>
-                <div class="team-section">
-                    <h3>● Equipo de trabajo:</h3>
-                    <ul class="team-list">
-                        <li><span class="emoji">👨</span> Marco Isaac Pinchi Paredes</li>
-                        <li><span class="emoji">👩</span> Jessy Mishel Arévalo Pinedo</li>
-                        <li><span class="emoji">👨</span> Segundo Ronaldo Tananta Paima</li>
-                        <li><span class="emoji">👩</span> Corina Rosales Solsol</li>
-                        <li><span class="emoji">👩</span> Naydelin Crissel Rengifo Salas</li>
-                        <li><span class="emoji">👩</span> Mayumi Gaby Lucerito Ruiz Alegría</li>
-                    </ul>
-                </div>
-                <button class="btn back-btn" id="back-btn">Volver</button>
-            </div>
-        </div>
-        <!-- Pantalla de Juegos -->
-        <div class="screen" id="games-screen">
-            <h2 class="section-title">Elige un juego</h2>
-            <div class="games-container">
-                <div class="game-card" data-game="verbs">
-                    <div class="game-icon">🏃‍♂️</div>
-                    <h3>Juego de Verbos</h3>
-                    <p>Identifica los verbos en diferentes oraciones</p>
-                </div>
-                <div class="game-card" data-game="subject">
-                    <div class="game-icon">🧍‍♀️</div>
-                    <h3>Juego del Sujeto</h3>
-                    <p>Encuentra quién realiza la acción</p>
-                </div>
-                <div class="game-card" data-game="object">
-                    <div class="game-icon">⚽</div>
-                    <h3>Juego del Objeto Directo</h3>
-                    <p>Descubre qué recibe la acción</p>
-                </div>
-            </div>
-            <!-- Botones en la parte baja -->
-            <div class="games-bottom">
-                <button class="btn home-bottom-btn" id="home-bottom-btn">Volver al Inicio</button>
-            </div>
-        </div>
-        <!-- Pantalla de Juego Activo -->
-        <div class="screen" id="game-active-screen">
-            <div class="game-header">
-                <button class="btn back-game-btn" id="back-game-btn">← Volver</button>
-                <h2 class="game-title" id="game-title">Juego de Verbos</h2>
-                <div class="score">Puntos: <span id="score">0</span></div>
-                <div id="progress-indicator">Pregunta 1 de 3</div>
-                <div id="timer">Tiempo: 15s</div>
-            </div>
-            <div class="game-content">
-                <div class="sentence-container">
-                    <p class="sentence" id="sentence">El niño juega con la pelota en el parque.</p>
-                </div>
-                <div class="game-instructions" id="game-instructions">
-                    Selecciona el <span class="highlight">verbo</span> en la oración
-                </div>
-                <div class="options-container" id="options-container">
-                    <!-- Opciones se generan dinámicamente -->
-                </div>
-                <div class="feedback" id="feedback"></div>
-                <button class="btn next-btn" id="next-btn" disabled>Siguiente</button>
-            </div>
-        </div>
-        <!-- Pantalla de Fin de Juego -->
-        <div class="screen" id="game-end-screen">
-            <div class="game-end-container">
-                <h2>¡Juego Terminado!</h2>
-                <div class="emoji" id="end-emoji">😄</div>
-                <div class="progress-bar-container">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
-                <p>Tu puntuación final es: <span id="final-score">0</span></p>
-                <button class="btn" id="play-again-btn">Volver a jugar</button>
-            </div>
-        </div>
+  <!-- === FONDO Y ANIMACIONES (NO TOCAR: idéntico a tu versión) === -->
+  <div class="background">
+    <div class="leaves">
+      <div class="set">
+        <div><img src="https://i.ibb.co/S0VnkZq/leaf-01.png" alt="leaf-01"></div>
+        <div><img src="https://i.ibb.co/fFrnHYd/leaf-02.png" alt="leaf-02"></div>
+        <div><img src="https://i.ibb.co/vdx8Jh5/leaf-03.png" alt="leaf-03"></div>
+        <div><img src="https://i.ibb.co/SdcBCvr/leaf-04.png" alt="leaf-04"></div>
+      </div>
     </div>
-    <script src="script.js"></script>
+    <img class="bg" src="https://i.ibb.co/rfNqbQG/bg.jpg" alt="background">
+    <img class="girl" src="https://i.ibb.co/W5ssvRf/girl.png" alt="girl on bike">
+    <img class="trees" src="https://i.ibb.co/QrMyLYc/trees.png" alt="trees">
+  </div>
+
+  <!-- === SECCIONES === -->
+  <!-- 1) Bienvenida -->
+  <section id="welcome" class="section active">
+    <h1>🌟 BIENVENIDO A DICGLO 🌟</h1>
+    <p class="subtitle">Un viaje educativo y divertido</p>
+    <button id="enter-button" class="button">🚀 INGRESAR</button>
+  </section>
+
+ <!-- Agrega esto justo después de la sección #welcome -->
+<div id="start-modal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>Por favor ingresa usuario</h3>
+    <input type="text" id="user-name" placeholder="Tu nombre" required>
+    <button id="confirm-user" class="button">Confirmar</button>
+  </div>
+</div>
+
+  <!-- 2) Escena Neón reactiva al audio -->
+  <section id="neon-section" class="section">
+    <div class="neon-overlay">
+      <div class="neon-stage">
+        <canvas id="neonCanvas" aria-label="Escena 3D reactiva al audio"></canvas>
+      </div>
+    </div>
+    <audio id="audio1" preload="auto" crossorigin="anonymous"></audio>
+  </section>
+
+  <!-- 3) Lector (Google Docs TXT) -->
+  <section id="reader-section" class="section">
+    <div class="reader-overlay">
+      <div class="reader-card">
+        <header class="reader-header">
+          <h3 id="docTitle">Cargando documento…</h3>
+          <div id="pageIndicator" class="page-indicator">Página 1</div>
+        </header>
+
+        <main id="bookContent" class="reader-content" aria-live="polite">
+          Cargando contenido...
+        </main>
+
+        <button id="prevPage" class="pager left" aria-label="Página anterior">◄</button>
+        <button id="nextPage" class="pager right" aria-label="Página siguiente">►</button>
+
+        <button id="finishReading" class="button finish-button">✅ Terminé de leer</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4) Examen (preguntas + juegos) -->
+  <section id="questions-section" class="section">
+       <!-- Añade estos elementos justo antes del cierre de la sección -->
+  <div id="timerCircle" class="timer-circle">2:00</div>
+  <div id="timeUpMessage" class="time-up-message">
+    <p>Lo siento, se acabaron tus minutos. 😢</p>
+  </div>
+    <form id="exam-form" class="exam-card" novalidate>
+      <h2>📝 Examen Integrado</h2>
+      <p class="exam-note">Lee con atención y completa todas las secciones. Al final presiona <strong>“Enviar respuestas”</strong>.</p>
+
+      <!-- A) Geografía del Perú -->
+      <fieldset class="block" data-required>
+        <legend>A. Geografía del Perú</legend>
+
+        <div class="question">
+          <p>1. ¿Cuál es la capital de Perú?</p>
+          <div class="options">
+            <label><input type="radio" name="q1" value="A" data-correct="requerida" required> A) Lima</label>
+            <label><input type="radio" name="q1" value="B"> B) Cusco</label>
+            <label><input type="radio" name="q1" value="C"> C) Arequipa</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>2. ¿Cuál es el océano que baña las costas de Perú?</p>
+          <div class="options">
+            <!-- AQUÍ estaba la diferencia: ahora la alternativa correcta (B - Pacífico)
+                 está marcada con data-correct="requerida" para que sume. -->
+            <label><input type="radio" name="q2" value="A" > A) Atlántico</label>
+            <label><input type="radio" name="q2" value="B" data-correct="requerida" required> B) Pacífico</label>
+            <label><input type="radio" name="q2" value="C"> C) Índico</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>3. ¿Cuál es el plato típico de Perú?</p>
+          <div class="options">
+            <label><input type="radio" name="q3" value="A"> A) Ceviche</label>
+            <label><input type="radio" name="q3" value="B"> B) Feijoada</label>
+            <label><input type="radio" name="q3" value="C" data-correct="requerida" required> C) Tacos</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- B) Comprensión lectora -->
+      <fieldset class="block" data-required>
+        <legend>B. Comprensión lectora</legend>
+        <article class="reading">
+          <h4>Fragmento</h4>
+          <p>
+            «En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía 
+            un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor...» 
+          </p>
+          <small>(Miguel de Cervantes, <em>Don Quijote de la Mancha</em>, dominio público)</small>
+        </article>
+
+        <div class="question">
+          <p>4. ¿Qué tipo de personaje se describe al inicio del fragmento?</p>
+          <div class="options">
+            <label><input type="radio" name="q4" value="A" data-correct="requerida" required> A) Un mercader adinerado</label>
+            <label><input type="radio" name="q4" value="B"> B) Un hidalgo</label>
+            <label><input type="radio" name="q4" value="C"> C) Un estudiante</label>
+          </div>
+        </div>
+
+        <div class="question">
+          <p>5. ¿Qué elemento NO aparece en la lista de pertenencias?</p>
+          <div class="options">
+            <label><input type="radio" name="q5" value="A"> A) Rocín</label>
+            <label><input type="radio" name="q5" value="B"> B) Galgo</label>
+            <label><input type="radio" name="q5" value="C" data-correct="requerida" required> C) Armadura completa</label>
+          </div>
+        </div>
+      </fieldset>
+
+      <!-- C) Ordena la oración (drag & drop) -->
+      <fieldset class="block" data-required data-correct="requerida" data-answer="En,un,lugar,de,la,Mancha,vivía,un,hidalgo">
+        <legend>C. Ordena la oración</legend>
+        <p class="hint">Arrastra las palabras para formar una oración coherente:</p>
+
+        <ul id="order-list" class="order-list" aria-label="Ordenar palabras">
+          <li draggable="true" data-word="En">En</li>
+          <li draggable="true" data-word="un">un</li>
+          <li draggable="true" data-word="lugar">lugar</li>
+          <li draggable="true" data-word="de">de</li>
+          <li draggable="true" data-word="la">la</li>
+          <li draggable="true" data-word="Mancha">Mancha</li>
+          <li draggable="true" data-word="vivía">vivía</li>
+          <li draggable="true" data-word="un">un</li>
+          <li draggable="true" data-word="hidalgo">hidalgo</li>
+        </ul>
+      </fieldset>
+
+      <!-- D) Vocabulario -->
+      <fieldset class="block" data-required>
+        <legend>D. Vocabulario</legend>
+        <div class="match-grid">
+          <label class="match-row">
+            <span class="term">hidalgo</span>
+            <select name="v1" required>
+              <option value="">Selecciona definición</option>
+              <option value="A" data-correct="requerida" required>Noble de baja categoría</option>
+              <option value="B">Arma de madera</option>
+              <option value="C">Perro ligero para caza</option>
+            </select>
+          </label>
+
+          <label class="match-row">
+            <span class="term">adarga</span>
+            <select name="v2" required>
+              <option value="">Selecciona definición</option>
+              <option value="A" data-correct="requerida" required>Escudo de cuero</option>
+              <option value="B">Caballo de trabajo</option>
+              <option value="C">Comida típica</option>
+            </select>
+          </label>
+
+          <label class="match-row">
+            <span class="term">galgo</span>
+            <select name="v3" required>
+              <option value="">Selecciona definición</option>
+              <option value="A" data-correct="requerida" required>Perro corredor</option>
+              <option value="B">Sombrero antiguo</option>
+              <option value="C">Moneda medieval</option>
+            </select>
+          </label>
+        </div>
+      </fieldset>
+
+      <!-- Botón único -->
+      <div class="actions">
+        <button type="submit" id="submit-button" class="button submit-button">✅ Enviar respuestas</button>
+      </div>
+    </form>
+
+    <audio id="audio3" preload="auto" crossorigin="anonymous"></audio>
+  </section>
+
+<!-- Overlay para envío exitoso -->
+  <div id="submission-overlay" class="submission-overlay" style="display: none;">
+    <div class="submission-message">🎉 ¡Respuestas enviadas! 🎉</div>
+  </div>
+
+  <!-- Librería Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+  <!-- Agrega esto antes del cierre de la etiqueta </body> -->
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-database.js"></script>
+  <!-- Lógica de la app -->
+  <script src="script.js"></script>
 </body>
 </html>
-
