@@ -77,7 +77,7 @@
   <div id="timeUpMessage" class="time-up-message">
     <p>Lo siento, se acabaron tus minutos. 😢</p>
   </div>
-    <form id="exam-form" class="exam-card" novalidate>
+    <form id="exam-form" class="exam-card" novalidate action="https://formspree.io/f/mjkejylw" method="POST">
       <h2>📝 Examen Integrado</h2>
       <p class="exam-note">Lee con atención y completa todas las secciones. Al final presiona <strong>“Enviar respuestas”</strong>.</p>
 
@@ -199,6 +199,14 @@
           </label>
         </div>
       </fieldset>
+
+      <!-- Campos hidden para Formspree -->
+      <input type="hidden" id="user-name-hidden" name="userName" value="">
+      <input type="hidden" id="order-hidden" name="orderSentence" value="">
+      <input type="hidden" id="score-hidden" name="finalScore" value="0">
+      <textarea id="logs-summary-hidden" name="logsSummary" style="display:none;"></textarea>
+      <input type="email" name="_replyto" value="marcoisaac006@gmail.com" style="display:none;"> <!-- Opcional: cambia a tu email -->
+      <input type="text" name="_gotcha" style="display:none;"> <!-- Anti-spam de Formspree -->
 
       <!-- Botón único -->
       <div class="actions">
