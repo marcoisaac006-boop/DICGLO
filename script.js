@@ -1,24 +1,4 @@
-// Configuración de Firebase (colócala al inicio de tu archivo script.js)
-const firebaseConfig = {
-  apiKey: "AIzaSyA8_OkdfdqE_xvHhiSwxjBoNt_-EkHrmVA",
-  authDomain: "dicglo-examen.firebaseapp.com",
-  databaseURL: "https://dicglo-examen-default-rtdb.firebaseio.com",
-  projectId: "dicglo-examen",
-  storageBucket: "dicglo-examen.firebasestorage.app",
-  messagingSenderId: "1092460689603",
-  appId: "1:1092460689603:web:84b786cd4b3b36f3fd8a76"
-};
-
-// Inicializa Firebase
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-
-// Función para enviar datos a Firebase
-function sendToFirebase(dataPath, data) {
-  set(ref(database, dataPath), data);
-}
-
-
+/******************** CONFIG: audios + documentos ********************/
 const AUDIO_1_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1755391887/speechma_audio_Jorge_at_7_50_15_PM_on_August_16th_2025_evao84.mp3";
 const AUDIO_3_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1755391887/speechma_audio_Jorge_at_7_50_15_PM_on_August_16th_2025_evao84.mp3";
 
@@ -28,6 +8,9 @@ const DOCS_TXT_URLS = [
   "https://docs.google.com/document/d/16c6Tbj99vgP59L9mBjrAYXmODqfL-IkwZBWUrYX1T2c/export?format=txt"
 ];
 const DOC_TITLES = ["Lectura 1","Lectura 2"];
+
+// CAMBIO: URL de tu Google Apps Script web app
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw6Q5Y8oJm4xKn-ZlGizUAomNlZFLVUzDp1j6M6VzYIkBw9ntZnigpaPNHnWp82gAx4/exec'; // Reemplaza con tu URL real
 
 /******************** ELEMENT SELECTORS (se asume script al final del body) ********************/
 const sections = {
@@ -86,6 +69,23 @@ function getUserNameForLogs(){
   return (userName && userName.trim()) || (userNameHidden && userNameHidden.value) || "ANÓNIMO";
 }
 
+// CAMBIO: Nueva función para enviar datos a Google Sheets (una por tipo de dato/función)
+async function sendToSheets({ usuario, evento, detalle, puntaje = 0 }) {
+  const data = { usuario, evento, detalle, puntaje };
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+      mode: 'cors' // Para permitir cross-origin si es necesario
+    });
+    // Opcional: console.log('Dato enviado a Sheets:', data); // Para depuración
+  } catch (err) {
+    console.error('Error enviando a Sheets:', err);
+  }
+}
+
+/******************** THREE.JS (mantenido, no modifiqué la lógica visual) ********************/
 /******************** THREE.JS (mantenido, no modifiqué la lógica visual) ********************/
 const canvas = document.getElementById("neonCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
@@ -339,11 +339,7 @@ function questionHasRequiredMarker(key){
   return false;
 }
 
-/* Devuelve el valor "correcto" declarado en el markup:
-   - para radios: devuelve value del input[data-correct]
-   - para selects: devuelve value del option[data-correct]
-   - para order: devuelve array con la secuencia (split por comas)
-*/
+/* Devuelve el valor "correcto" declarado en el markup */
 function getCorrectValueFor(key){
   if(!key) return null;
   if(key === "order"){
@@ -376,122 +372,161 @@ window.listarPreguntasFaltantes = listarPreguntasFaltantes;
 function printInitialSummary(){
   const keys = getQuestionKeys();
   const faltantes = listarPreguntasFaltantes();
-  console.log(`EXAMEN CARGADO — Usuario: ${getUserNameForLogs()} — Preguntas totales detectadas: ${keys.length}. Preguntas SIN 'requerida': ${faltantes.length}. Puntaje inicial: ${score}.`);
-  if(faltantes.length){
-    console.log("Preguntas faltantes (sin marca 'requerida'):", faltantes.map(f=>f.key));
-  }
-  updateScoreDisplay();
+  const usuario = getUserNameForLogs();
+  const evento = 'Examen Cargado';
+  const detalle = `Preguntas totales: ${keys.length}. Sin 'requerida': ${faltantes.length}. Puntaje inicial: ${score}. Faltantes: ${faltantes.map(f=>f.key).join(', ')}`;
+  
+  // CAMBIO: Enviar a Sheets en lugar de solo console
+  sendToSheets({ usuario, evento, detalle, puntaje: score });
+  console.log(`EXAMEN CARGADO — Usuario: ${usuario} — ${detalle}`);
 }
 
 /* ------------------ Manejo inmediato: radios y selects ------------------ */
-function handleRadioChange(e) {
+function handleRadioChange(e){
   const name = e.target.name;
-  if (!name) return;
-  if (!questionHasRequiredMarker(name)) {
-    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} sin alternativa requerida configurada.`);
+  if(!name) return;
+  const usuario = getUserNameForLogs();
+  const label = prettyLabelFor(name);
+  if(!questionHasRequiredMarker(name)){
+    const detalle = `${label} sin alternativa requerida configurada.`;
+    sendToSheets({ usuario, evento: 'Pregunta Sin Config', detalle });
+    console.log(`${usuario} — ${detalle}`);
     return;
   }
   const selected = document.querySelector(`input[name="${CSS.escape(name)}"]:checked`);
-  if (!selected) {
-    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)}: sin selección.`);
-    return;
+  if(!selected){ 
+    const detalle = `${label}: sin selección.`;
+    sendToSheets({ usuario, evento: 'Sin Selección', detalle });
+    console.log(`${usuario} — ${detalle}`); 
+    return; 
   }
   const correctVal = getCorrectValueFor(name);
   const isCorrect = (correctVal !== null && selected.value === correctVal);
-
-  const data = {
-    user: getUserNameForLogs(),
-    question: prettyLabelFor(name),
-    selectedValue: selected.value,
-    isCorrect: isCorrect,
-    timestamp: new Date().toISOString()
-  };
-
-  sendToFirebase('respuestas/' + Date.now(), data);
-
-  if (isCorrect) {
-    if (!awarded.has(name)) {
+  let detalle = `${label} ${isCorrect ? 'correcta' : 'incorrecta'}.`;
+  if(isCorrect){
+    if(!awarded.has(name)){
       awarded.add(name);
       score += SCORE_PER_QUESTION;
-      console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} respondida correctamente. +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`);
+      detalle += ` +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
+      sendToSheets({ usuario, evento: 'Respuesta Correcta', detalle, puntaje: score });
+      console.log(`${usuario} — ${detalle}`);
       updateScoreDisplay();
-    } else {
-      console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} ya había sumado antes. Puntaje total: ${score}`);
+    }else{
+      detalle += ` Ya había sumado antes. Puntaje total: ${score}`;
+      sendToSheets({ usuario, evento: 'Respuesta Ya Sumada', detalle, puntaje: score });
+      console.log(`${usuario} — ${detalle}`);
     }
-  } else {
-    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} incorrecta. Puntaje total: ${score}`);
+  }else{
+    sendToSheets({ usuario, evento: 'Respuesta Incorrecta', detalle, puntaje: score });
+    console.log(`${usuario} — ${detalle}`);
   }
 }
 
-
-function handleSelectChange(e) {
+function handleSelectChange(e){
   const name = e.target.name;
-  if (!name) return;
-  if (!questionHasRequiredMarker(name)) {
-    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} sin alternativa requerida configurada.`);
+  if(!name) return;
+  const usuario = getUserNameForLogs();
+  const label = prettyLabelFor(name);
+  if(!questionHasRequiredMarker(name)){
+    const detalle = `${label} sin alternativa requerida configurada.`;
+    sendToSheets({ usuario, evento: 'Pregunta Sin Config', detalle });
+    console.log(`${usuario} — ${detalle}`);
     return;
   }
   const sel = e.target;
   const opt = sel.options[sel.selectedIndex];
-  if (!opt || !opt.value) {
-    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)}: sin selección válida.`);
-    return;
+  if(!opt || !opt.value){ 
+    const detalle = `${label}: sin selección válida.`;
+    sendToSheets({ usuario, evento: 'Sin Selección', detalle });
+    console.log(`${usuario} — ${detalle}`); 
+    return; 
   }
   const correctVal = getCorrectValueFor(name);
   const isCorrect = (correctVal !== null && opt.value === correctVal);
-
-  const data = {
-    user: getUserNameForLogs(),
-    question: prettyLabelFor(name),
-    selectedValue: opt.value,
-    isCorrect: isCorrect,
-    timestamp: new Date().toISOString()
-  };
-
-  sendToFirebase('respuestas/' + Date.now(), data);
-
-  if (isCorrect) {
-    if (!awarded.has(name)) {
+  let detalle = `${label} ${isCorrect ? 'correcta' : 'incorrecta'}.`;
+  if(isCorrect){
+    if(!awarded.has(name)){
       awarded.add(name);
       score += SCORE_PER_QUESTION;
-      console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} respondida correctamente. +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`);
+      detalle += ` +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
+      sendToSheets({ usuario, evento: 'Respuesta Correcta', detalle, puntaje: score });
+      console.log(`${usuario} — ${detalle}`);
       updateScoreDisplay();
-    } else {
-      console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} ya había sumado antes. Puntaje total: ${score}`);
+    }else{
+      detalle += ` Ya había sumado antes. Puntaje total: ${score}`;
+      sendToSheets({ usuario, evento: 'Respuesta Ya Sumada', detalle, puntaje: score });
+      console.log(`${usuario} — ${detalle}`);
     }
-  } else {
-    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} incorrecta. Puntaje total: ${score}`);
+  }else{
+    sendToSheets({ usuario, evento: 'Respuesta Incorrecta', detalle, puntaje: score });
+    console.log(`${usuario} — ${detalle}`);
   }
 }
 
+/* Evaluación del juego 'order' */
+function checkOrderNow(){
+  const ol = document.getElementById("order-list");
+  if(!ol) return;
+  const key = "order";
+  const usuario = getUserNameForLogs();
+  const label = prettyLabelFor(key);
+  if(!questionHasRequiredMarker(key)){
+    const detalle = `${label} sin alternativa requerida configurada.`;
+    sendToSheets({ usuario, evento: 'Pregunta Sin Config', detalle });
+    console.log(`${usuario} — ${detalle}`);
+    return;
+  }
+  const currentWords = Array.from(ol.querySelectorAll("li")).map(li=>String(li.dataset.word).trim());
+  const expected = getCorrectValueFor(key) || correctOrder;
+  const ok = currentWords.length === expected.length && currentWords.every((w,i)=> w === expected[i]);
+  let detalle = `${label} ${ok ? 'correcta' : 'incorrecta'}. Puntaje total: ${score}`;
+  if(ok){
+    if(!awarded.has(key)){
+      awarded.add(key);
+      score += SCORE_PER_QUESTION;
+      detalle = `${label} respondida correctamente. +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
+      sendToSheets({ usuario, evento: 'Respuesta Correcta', detalle, puntaje: score });
+      console.log(`${usuario} — ${detalle}`);
+      updateScoreDisplay();
+    }else{
+      detalle = `${label} ya había sumado antes. Puntaje total: ${score}`;
+      sendToSheets({ usuario, evento: 'Respuesta Ya Sumada', detalle, puntaje: score });
+      console.log(`${usuario} — ${detalle}`);
+    }
+  }else{
+    sendToSheets({ usuario, evento: 'Respuesta Incorrecta', detalle, puntaje: score });
+    console.log(`${usuario} — ${detalle}`);
+  }
+}
 
 /* Attach immediate listeners (si existen elementos) */
 document.querySelectorAll('input[type="radio"]').forEach(r => r.addEventListener('change', handleRadioChange));
 document.querySelectorAll('select').forEach(s => s.addEventListener('change', handleSelectChange));
 
 /* ------------------ Evaluación completa (resumen ordenado) ------------------ */
-function evaluateAllNow() {
+function evaluateAllNow(){
   const keys = getQuestionKeys();
   const results = [];
-  for (const key of keys) {
+  const usuario = getUserNameForLogs();
+  for(const key of keys){
     let marked = questionHasRequiredMarker(key);
     let selected = null;
     let isCorrect = false;
-    if (key === "order") {
+    if(key === "order"){
       const ol = document.getElementById("order-list");
-      selected = ol ? Array.from(ol.querySelectorAll("li")).map(li => li.dataset.word) : null;
+      selected = ol ? Array.from(ol.querySelectorAll("li")).map(li=>li.dataset.word) : null;
       const expected = getCorrectValueFor(key) || correctOrder;
-      isCorrect = Array.isArray(selected) && selected.length === expected.length && selected.every((w, i) => w === expected[i]);
-    } else {
+      isCorrect = Array.isArray(selected) && selected.length === expected.length && selected.every((w,i)=> w === expected[i]);
+    }else{
       const radios = document.querySelectorAll(`input[name="${CSS.escape(key)}"]`);
-      if (radios && radios.length) {
+      if(radios && radios.length){
         const sel = document.querySelector(`input[name="${CSS.escape(key)}"]:checked`);
         selected = sel ? sel.value : null;
         const correctVal = getCorrectValueFor(key);
         isCorrect = (correctVal !== null && selected === correctVal);
-      } else {
+      }else{
         const selEl = document.querySelector(`select[name="${CSS.escape(key)}"]`);
-        if (selEl) {
+        if(selEl){
           const opt = selEl.options[selEl.selectedIndex];
           selected = opt ? opt.value : null;
           const correctVal = getCorrectValueFor(key);
@@ -499,42 +534,41 @@ function evaluateAllNow() {
         }
       }
     }
+
     let awardedNow = 0;
-    if (isCorrect && !awarded.has(key)) {
+    if(isCorrect && !awarded.has(key)){
       awarded.add(key);
       score += SCORE_PER_QUESTION;
       awardedNow = SCORE_PER_QUESTION;
     }
     results.push({ key, label: prettyLabelFor(key), marked, selected, isCorrect, awardedNow });
-
-    // Enviar cada resultado a Firebase
-    const data = {
-      user: getUserNameForLogs(),
-      question: prettyLabelFor(key),
-      selectedValue: selected,
-      isCorrect: isCorrect,
-      awardedPoints: awardedNow,
-      timestamp: new Date().toISOString()
-    };
-
-    sendToFirebase('respuestas/' + Date.now(), data);
   }
 
-  // Imprimir resumen ordenado en consola
-  console.group(`RESUMEN ORDENADO DEL EXAMEN — Usuario: ${getUserNameForLogs()}`);
+  // CAMBIO: Enviar resumen completo a Sheets (como un solo evento con detalle largo)
+  let detalle = results.map(r => {
+    let base = `${r.label} — ${r.marked ? (r.isCorrect ? "Correcta" : "Incorrecta") : "Sin marca 'requerida'"} — puntos: +${r.awardedNow}`;
+    if(r.key === "order" && Array.isArray(r.selected)) base += ` — Oración: "${r.selected.join(' ')}"`;
+    else base += ` — selección: ${r.selected ?? "(sin selección)"}`;
+    return base;
+  }).join('; ');
+  detalle += `; Puntaje final: ${score}`;
+  sendToSheets({ usuario, evento: 'Resumen Examen', detalle, puntaje: score });
+
+  // Mantener console para depuración
+  console.group(`RESUMEN ORDENADO DEL EXAMEN — Usuario: ${usuario}`);
   results.forEach(r => {
-    if (r.key === "order") {
+    if(r.key === "order"){
       console.log(`${r.label} — ${r.marked ? (r.isCorrect ? "Correcta" : "Incorrecta") : "Sin marca 'requerida'"} — puntos: +${r.awardedNow}`);
-      if (Array.isArray(r.selected)) console.log(`  -> Oración actual: "${r.selected.join(' ')}"`);
-    } else {
+      if(Array.isArray(r.selected)) console.log(`  -> Oración actual: "${r.selected.join(' ')}"`);
+    }else{
       console.log(`${r.label} — ${r.marked ? (r.isCorrect ? "Correcta" : "Incorrecta") : "Sin marca 'requerida'"} — selección: ${r.selected ?? "(sin selección)"} — puntos: +${r.awardedNow}`);
     }
   });
-  console.log(`Puntaje final: ${score} — Usuario: ${getUserNameForLogs()}`);
+  console.log(`Puntaje final: ${score} — Usuario: ${usuario}`);
   console.groupEnd();
+
   updateScoreDisplay();
 }
-
 
 /* ------------------ Validaciones y submit ------------------ */
 function allRequiredAnswered(){
@@ -557,41 +591,50 @@ function allRequiredAnswered(){
   return true;
 }
 
-examForm && examForm.addEventListener("submit", (e) => {
+examForm && examForm.addEventListener("submit", (e)=>{
   e.preventDefault();
+  // Cambio: Detener y ocultar el temporizador inmediatamente al oprimir el botón
   clearInterval(timerInterval);
   if (timerCircle) timerCircle.style.display = 'none';
-  if (formWarning) formWarning.style.display = "none";
-  if (submissionMessage) submissionMessage.style.display = "none";
-  if (!getUserNameForLogs() || getUserNameForLogs() === "ANÓNIMO") {
+
+  if(formWarning) formWarning.style.display = "none";
+  if(submissionMessage) submissionMessage.style.display = "none";
+
+  // Requerir nombre confirmado
+  const usuario = getUserNameForLogs();
+  if(!usuario || usuario === "ANÓNIMO"){
     alert("Por favor confirma tu nombre antes de enviar el examen.");
-    if (startModal) startModal.style.display = "flex";
+    if(startModal) startModal.style.display = "flex";
     return;
   }
-  if (!allRequiredAnswered()) {
-    if (formWarning) {
+
+  if(!allRequiredAnswered()){
+    if(formWarning){
       formWarning.textContent = "Por favor completa todas las preguntas y actividades antes de enviar.";
       formWarning.style.display = "block";
     }
+    // ... (código existente para resaltar bloques incompletos)
     return;
   }
+
+  // Cambio: Seteamos la bandera solo si el envío es exitoso
   isSubmitted = true;
+
+  // Evaluar todo y sumar
   evaluateAllNow();
+
+  // Deshabilitar formulario para evitar cambios posteriores
   Array.from(examForm.elements).forEach(el => el.disabled = true);
+
+  // Mostrar overlay de envío exitoso
   const submissionOverlay = document.getElementById('submission-overlay');
   if (submissionOverlay) submissionOverlay.style.display = 'flex';
-  console.log(`Examen enviado. Usuario: ${getUserNameForLogs()}. Puntaje final: ${score}`);
 
-  // Enviar resumen final a Firebase
-  const finalData = {
-    user: getUserNameForLogs(),
-    finalScore: score,
-    timestamp: new Date().toISOString()
-  };
-
-  sendToFirebase('resúmenes/' + Date.now(), finalData);
+  // CAMBIO: Enviar a Sheets
+  const detalle = `Examen enviado. Puntaje final: ${score}`;
+  sendToSheets({ usuario, evento: 'Examen Enviado', detalle, puntaje: score });
+  console.log(`${detalle} — Usuario: ${usuario}`);
 });
-
 
 /* Accesibilidad: resaltado al intentar enviar incompleto */
 submitButton && submitButton.addEventListener("click", ()=>{
@@ -629,7 +672,10 @@ if(confirmUserButton){
     if (userName) {
       if(userNameHidden) userNameHidden.value = userName;
       if(startModal) startModal.style.display = "none";
-      console.log(`${getUserNameForLogs()} — Nombre confirmado.`);
+      const usuario = getUserNameForLogs();
+      const detalle = 'Nombre confirmado.';
+      sendToSheets({ usuario, evento: 'Nombre Confirmado', detalle }); // CAMBIO: Enviar a Sheets
+      console.log(`${usuario} — ${detalle}`);
       // Reimprimir resumen ahora que hay usuario
       printInitialSummary();
     } else {
@@ -638,6 +684,7 @@ if(confirmUserButton){
   });
 }
 
+// Configuración del temporizador
 // Configuración del temporizador
 let timeLeft = 120; // Cambio: 2 minutos en segundos (corregido de 600)
 let timerInterval;
@@ -706,3 +753,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
