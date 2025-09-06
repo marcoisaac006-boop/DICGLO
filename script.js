@@ -9,9 +9,6 @@ const DOCS_TXT_URLS = [
 ];
 const DOC_TITLES = ["Lectura 1","Lectura 2"];
 
-// CAMBIO: URL de tu Google Apps Script web app
-const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbw6Q5Y8oJm4xKn-ZlGizUAomNlZFLVUzDp1j6M6VzYIkBw9ntZnigpaPNHnWp82gAx4/exec'; // Reemplaza con tu URL real
-
 /******************** ELEMENT SELECTORS (se asume script al final del body) ********************/
 const sections = {
   welcome: document.getElementById("welcome"),
@@ -69,23 +66,6 @@ function getUserNameForLogs(){
   return (userName && userName.trim()) || (userNameHidden && userNameHidden.value) || "ANÓNIMO";
 }
 
-// CAMBIO: Nueva función para enviar datos a Google Sheets (una por tipo de dato/función)
-async function sendToSheets({ usuario, evento, detalle, puntaje = 0 }) {
-  const data = { usuario, evento, detalle, puntaje };
-  try {
-    await fetch(SHEETS_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-      mode: 'cors' // Para permitir cross-origin si es necesario
-    });
-    // Opcional: console.log('Dato enviado a Sheets:', data); // Para depuración
-  } catch (err) {
-    console.error('Error enviando a Sheets:', err);
-  }
-}
-
-/******************** THREE.JS (mantenido, no modifiqué la lógica visual) ********************/
 /******************** THREE.JS (mantenido, no modifiqué la lógica visual) ********************/
 const canvas = document.getElementById("neonCanvas");
 const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
@@ -300,6 +280,7 @@ const correctOrder = ["En","un","lugar","de","la","Mancha","vivía","un","hidalg
 let score = 0;
 const SCORE_PER_QUESTION = 2;
 const awarded = new Set(); // claves (ej. "q1","v2","order")
+let logsArray = []; // Nueva: para recopilar logs y enviar a Formspree
 
 /* Actualiza UI si exists (no la usas) */
 function updateScoreDisplay(){
@@ -339,7 +320,11 @@ function questionHasRequiredMarker(key){
   return false;
 }
 
-/* Devuelve el valor "correcto" declarado en el markup */
+/* Devuelve el valor "correcto" declarado en el markup:
+   - para radios: devuelve value del input[data-correct]
+   - para selects: devuelve value del option[data-correct]
+   - para order: devuelve array con la secuencia (split por comas)
+*/
 function getCorrectValueFor(key){
   if(!key) return null;
   if(key === "order"){
@@ -372,94 +357,74 @@ window.listarPreguntasFaltantes = listarPreguntasFaltantes;
 function printInitialSummary(){
   const keys = getQuestionKeys();
   const faltantes = listarPreguntasFaltantes();
-  const usuario = getUserNameForLogs();
-  const evento = 'Examen Cargado';
-  const detalle = `Preguntas totales: ${keys.length}. Sin 'requerida': ${faltantes.length}. Puntaje inicial: ${score}. Faltantes: ${faltantes.map(f=>f.key).join(', ')}`;
-  
-  // CAMBIO: Enviar a Sheets en lugar de solo console
-  sendToSheets({ usuario, evento, detalle, puntaje: score });
-  console.log(`EXAMEN CARGADO — Usuario: ${usuario} — ${detalle}`);
+  console.log(`EXAMEN CARGADO — Usuario: ${getUserNameForLogs()} — Preguntas totales detectadas: ${keys.length}. Preguntas SIN 'requerida': ${faltantes.length}. Puntaje inicial: ${score}.`);
+  if(faltantes.length){
+    console.log("Preguntas faltantes (sin marca 'requerida'):", faltantes.map(f=>f.key));
+  }
+  updateScoreDisplay();
 }
 
 /* ------------------ Manejo inmediato: radios y selects ------------------ */
 function handleRadioChange(e){
   const name = e.target.name;
   if(!name) return;
-  const usuario = getUserNameForLogs();
-  const label = prettyLabelFor(name);
   if(!questionHasRequiredMarker(name)){
-    const detalle = `${label} sin alternativa requerida configurada.`;
-    sendToSheets({ usuario, evento: 'Pregunta Sin Config', detalle });
-    console.log(`${usuario} — ${detalle}`);
+    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} sin alternativa requerida configurada.`);
     return;
   }
   const selected = document.querySelector(`input[name="${CSS.escape(name)}"]:checked`);
-  if(!selected){ 
-    const detalle = `${label}: sin selección.`;
-    sendToSheets({ usuario, evento: 'Sin Selección', detalle });
-    console.log(`${usuario} — ${detalle}`); 
-    return; 
-  }
+  if(!selected){ console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)}: sin selección.`); return; }
   const correctVal = getCorrectValueFor(name);
   const isCorrect = (correctVal !== null && selected.value === correctVal);
-  let detalle = `${label} ${isCorrect ? 'correcta' : 'incorrecta'}.`;
   if(isCorrect){
     if(!awarded.has(name)){
       awarded.add(name);
       score += SCORE_PER_QUESTION;
-      detalle += ` +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
-      sendToSheets({ usuario, evento: 'Respuesta Correcta', detalle, puntaje: score });
-      console.log(`${usuario} — ${detalle}`);
+      const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(name)} respondida correctamente. +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
+      logsArray.push(logStr);
+      console.log(logStr);
       updateScoreDisplay();
     }else{
-      detalle += ` Ya había sumado antes. Puntaje total: ${score}`;
-      sendToSheets({ usuario, evento: 'Respuesta Ya Sumada', detalle, puntaje: score });
-      console.log(`${usuario} — ${detalle}`);
+      const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(name)} ya había sumado antes. Puntaje total: ${score}`;
+      logsArray.push(logStr);
+      console.log(logStr);
     }
   }else{
-    sendToSheets({ usuario, evento: 'Respuesta Incorrecta', detalle, puntaje: score });
-    console.log(`${usuario} — ${detalle}`);
+    const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(name)} incorrecta. Puntaje total: ${score}`;
+    logsArray.push(logStr);
+    console.log(logStr);
   }
 }
 
 function handleSelectChange(e){
   const name = e.target.name;
   if(!name) return;
-  const usuario = getUserNameForLogs();
-  const label = prettyLabelFor(name);
   if(!questionHasRequiredMarker(name)){
-    const detalle = `${label} sin alternativa requerida configurada.`;
-    sendToSheets({ usuario, evento: 'Pregunta Sin Config', detalle });
-    console.log(`${usuario} — ${detalle}`);
+    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)} sin alternativa requerida configurada.`);
     return;
   }
   const sel = e.target;
   const opt = sel.options[sel.selectedIndex];
-  if(!opt || !opt.value){ 
-    const detalle = `${label}: sin selección válida.`;
-    sendToSheets({ usuario, evento: 'Sin Selección', detalle });
-    console.log(`${usuario} — ${detalle}`); 
-    return; 
-  }
+  if(!opt || !opt.value){ console.log(`${getUserNameForLogs()} — ${prettyLabelFor(name)}: sin selección válida.`); return; }
   const correctVal = getCorrectValueFor(name);
   const isCorrect = (correctVal !== null && opt.value === correctVal);
-  let detalle = `${label} ${isCorrect ? 'correcta' : 'incorrecta'}.`;
   if(isCorrect){
     if(!awarded.has(name)){
       awarded.add(name);
       score += SCORE_PER_QUESTION;
-      detalle += ` +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
-      sendToSheets({ usuario, evento: 'Respuesta Correcta', detalle, puntaje: score });
-      console.log(`${usuario} — ${detalle}`);
+      const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(name)} respondida correctamente. +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
+      logsArray.push(logStr);
+      console.log(logStr);
       updateScoreDisplay();
     }else{
-      detalle += ` Ya había sumado antes. Puntaje total: ${score}`;
-      sendToSheets({ usuario, evento: 'Respuesta Ya Sumada', detalle, puntaje: score });
-      console.log(`${usuario} — ${detalle}`);
+      const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(name)} ya había sumado antes. Puntaje total: ${score}`;
+      logsArray.push(logStr);
+      console.log(logStr);
     }
   }else{
-    sendToSheets({ usuario, evento: 'Respuesta Incorrecta', detalle, puntaje: score });
-    console.log(`${usuario} — ${detalle}`);
+    const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(name)} incorrecta. Puntaje total: ${score}`;
+    logsArray.push(logStr);
+    console.log(logStr);
   }
 }
 
@@ -468,34 +433,30 @@ function checkOrderNow(){
   const ol = document.getElementById("order-list");
   if(!ol) return;
   const key = "order";
-  const usuario = getUserNameForLogs();
-  const label = prettyLabelFor(key);
   if(!questionHasRequiredMarker(key)){
-    const detalle = `${label} sin alternativa requerida configurada.`;
-    sendToSheets({ usuario, evento: 'Pregunta Sin Config', detalle });
-    console.log(`${usuario} — ${detalle}`);
+    console.log(`${getUserNameForLogs()} — ${prettyLabelFor(key)} sin alternativa requerida configurada.`);
     return;
   }
   const currentWords = Array.from(ol.querySelectorAll("li")).map(li=>String(li.dataset.word).trim());
   const expected = getCorrectValueFor(key) || correctOrder;
   const ok = currentWords.length === expected.length && currentWords.every((w,i)=> w === expected[i]);
-  let detalle = `${label} ${ok ? 'correcta' : 'incorrecta'}. Puntaje total: ${score}`;
   if(ok){
     if(!awarded.has(key)){
       awarded.add(key);
       score += SCORE_PER_QUESTION;
-      detalle = `${label} respondida correctamente. +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
-      sendToSheets({ usuario, evento: 'Respuesta Correcta', detalle, puntaje: score });
-      console.log(`${usuario} — ${detalle}`);
+      const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(key)} respondida correctamente. +${SCORE_PER_QUESTION} puntos. Puntaje total: ${score}`;
+      logsArray.push(logStr);
+      console.log(logStr);
       updateScoreDisplay();
     }else{
-      detalle = `${label} ya había sumado antes. Puntaje total: ${score}`;
-      sendToSheets({ usuario, evento: 'Respuesta Ya Sumada', detalle, puntaje: score });
-      console.log(`${usuario} — ${detalle}`);
+      const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(key)} ya había sumado antes. Puntaje total: ${score}`;
+      logsArray.push(logStr);
+      console.log(logStr);
     }
   }else{
-    sendToSheets({ usuario, evento: 'Respuesta Incorrecta', detalle, puntaje: score });
-    console.log(`${usuario} — ${detalle}`);
+    const logStr = `${getUserNameForLogs()} — ${prettyLabelFor(key)} incorrecta. Puntaje total: ${score}`;
+    logsArray.push(logStr);
+    console.log(logStr);
   }
 }
 
@@ -507,7 +468,6 @@ document.querySelectorAll('select').forEach(s => s.addEventListener('change', ha
 function evaluateAllNow(){
   const keys = getQuestionKeys();
   const results = [];
-  const usuario = getUserNameForLogs();
   for(const key of keys){
     let marked = questionHasRequiredMarker(key);
     let selected = null;
@@ -544,27 +504,19 @@ function evaluateAllNow(){
     results.push({ key, label: prettyLabelFor(key), marked, selected, isCorrect, awardedNow });
   }
 
-  // CAMBIO: Enviar resumen completo a Sheets (como un solo evento con detalle largo)
-  let detalle = results.map(r => {
-    let base = `${r.label} — ${r.marked ? (r.isCorrect ? "Correcta" : "Incorrecta") : "Sin marca 'requerida'"} — puntos: +${r.awardedNow}`;
-    if(r.key === "order" && Array.isArray(r.selected)) base += ` — Oración: "${r.selected.join(' ')}"`;
-    else base += ` — selección: ${r.selected ?? "(sin selección)"}`;
-    return base;
-  }).join('; ');
-  detalle += `; Puntaje final: ${score}`;
-  sendToSheets({ usuario, evento: 'Resumen Examen', detalle, puntaje: score });
-
-  // Mantener console para depuración
-  console.group(`RESUMEN ORDENADO DEL EXAMEN — Usuario: ${usuario}`);
+  // Imprimir resumen ordenado en consola
+  console.group(`RESUMEN ORDENADO DEL EXAMEN — Usuario: ${getUserNameForLogs()}`);
   results.forEach(r => {
+    let logStr = `${r.label} — ${r.marked ? (r.isCorrect ? "Correcta" : "Incorrecta") : "Sin marca 'requerida'"} — selección: ${r.selected ?? "(sin selección)"} — puntos: +${r.awardedNow}`;
     if(r.key === "order"){
-      console.log(`${r.label} — ${r.marked ? (r.isCorrect ? "Correcta" : "Incorrecta") : "Sin marca 'requerida'"} — puntos: +${r.awardedNow}`);
-      if(Array.isArray(r.selected)) console.log(`  -> Oración actual: "${r.selected.join(' ')}"`);
-    }else{
-      console.log(`${r.label} — ${r.marked ? (r.isCorrect ? "Correcta" : "Incorrecta") : "Sin marca 'requerida'"} — selección: ${r.selected ?? "(sin selección)"} — puntos: +${r.awardedNow}`);
+      logStr += `\n  -> Oración actual: "${r.selected.join(' ')}"`;
     }
+    logsArray.push(logStr); // Nueva: agregar a logsArray
+    console.log(logStr);
   });
-  console.log(`Puntaje final: ${score} — Usuario: ${usuario}`);
+  const finalLog = `Puntaje final: ${score} — Usuario: ${getUserNameForLogs()}`;
+  logsArray.push(finalLog); // Nueva: agregar a logsArray
+  console.log(finalLog);
   console.groupEnd();
 
   updateScoreDisplay();
@@ -592,7 +544,6 @@ function allRequiredAnswered(){
 }
 
 examForm && examForm.addEventListener("submit", (e)=>{
-  e.preventDefault();
   // Cambio: Detener y ocultar el temporizador inmediatamente al oprimir el botón
   clearInterval(timerInterval);
   if (timerCircle) timerCircle.style.display = 'none';
@@ -601,14 +552,14 @@ examForm && examForm.addEventListener("submit", (e)=>{
   if(submissionMessage) submissionMessage.style.display = "none";
 
   // Requerir nombre confirmado
-  const usuario = getUserNameForLogs();
-  if(!usuario || usuario === "ANÓNIMO"){
+  if(!getUserNameForLogs() || getUserNameForLogs() === "ANÓNIMO"){
     alert("Por favor confirma tu nombre antes de enviar el examen.");
     if(startModal) startModal.style.display = "flex";
     return;
   }
 
   if(!allRequiredAnswered()){
+    e.preventDefault(); // Solo prevent si incompleto
     if(formWarning){
       formWarning.textContent = "Por favor completa todas las preguntas y actividades antes de enviar.";
       formWarning.style.display = "block";
@@ -617,8 +568,21 @@ examForm && examForm.addEventListener("submit", (e)=>{
     return;
   }
 
-  // Cambio: Seteamos la bandera solo si el envío es exitoso
-  isSubmitted = true;
+  // Nueva: Actualizar hiddens para Formspree
+  // Actualiza hidden de orden (drag&drop)
+  const orderItems = document.querySelectorAll('#order-list li');
+  const currentOrder = Array.from(orderItems).map(li => li.dataset.word).join(', ');
+  if (document.getElementById('order-hidden')) document.getElementById('order-hidden').value = currentOrder;
+
+  // Actualiza puntaje
+  if (document.getElementById('score-hidden')) document.getElementById('score-hidden').value = score;
+
+  // Actualiza nombre (ya lo haces en confirmUserButton, pero asegúrate)
+  if(userNameHidden) userNameHidden.value = userName;
+
+  // Compila logs en textarea hidden (como texto multilínea)
+  const logsSummary = logsArray.join('\n');
+  if (document.getElementById('logs-summary-hidden')) document.getElementById('logs-summary-hidden').value = logsSummary;
 
   // Evaluar todo y sumar
   evaluateAllNow();
@@ -630,10 +594,12 @@ examForm && examForm.addEventListener("submit", (e)=>{
   const submissionOverlay = document.getElementById('submission-overlay');
   if (submissionOverlay) submissionOverlay.style.display = 'flex';
 
-  // CAMBIO: Enviar a Sheets
-  const detalle = `Examen enviado. Puntaje final: ${score}`;
-  sendToSheets({ usuario, evento: 'Examen Enviado', detalle, puntaje: score });
-  console.log(`${detalle} — Usuario: ${usuario}`);
+  // Cambio: Seteamos la bandera solo si el envío es exitoso
+  isSubmitted = true;
+
+  console.log(`Examen enviado. Usuario: ${getUserNameForLogs()}. Puntaje final: ${score}`);
+
+  // NO preventDefault aquí: permite envío a Formspree
 });
 
 /* Accesibilidad: resaltado al intentar enviar incompleto */
@@ -672,10 +638,7 @@ if(confirmUserButton){
     if (userName) {
       if(userNameHidden) userNameHidden.value = userName;
       if(startModal) startModal.style.display = "none";
-      const usuario = getUserNameForLogs();
-      const detalle = 'Nombre confirmado.';
-      sendToSheets({ usuario, evento: 'Nombre Confirmado', detalle }); // CAMBIO: Enviar a Sheets
-      console.log(`${usuario} — ${detalle}`);
+      console.log(`${getUserNameForLogs()} — Nombre confirmado.`);
       // Reimprimir resumen ahora que hay usuario
       printInitialSummary();
     } else {
@@ -684,7 +647,6 @@ if(confirmUserButton){
   });
 }
 
-// Configuración del temporizador
 // Configuración del temporizador
 let timeLeft = 120; // Cambio: 2 minutos en segundos (corregido de 600)
 let timerInterval;
@@ -753,4 +715,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
