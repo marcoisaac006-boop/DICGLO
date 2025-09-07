@@ -3,9 +3,9 @@ const AUDIO_1_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v17553918
 const AUDIO_3_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1755391887/speechma_audio_Jorge_at_7_50_15_PM_on_August_16th_2025_evao84.mp3";
 
 /* IMPORTANTE: usa URLs de Google Docs con export?format=txt (no 'edit'). */
-const DOCS_TXT_URLS = [
-  "https://docs.google.com/document/d/16c6Tbj99vgP59L9mBjrAYXmODqfL-IkwZBWUrYX1T2c/export?format=txt",
-  "https://docs.google.com/document/d/16c6Tbj99vgP59L9mBjrAYXmODqfL-IkwZBWUrYX1T2c/export?format=txt"
+const DOCS_TXT_URLS = [  // Nota: Renómbralo a DOCS_HTML_URLS si quieres, pero no es obligatorio
+  "https://docs.google.com/document/d/1ZBFkGECUSk0bcXXSFgtkYPuOU8mOl6xVWxnTPKPzp64/export?format=html",
+  "https://docs.google.com/document/d/1ZBFkGECUSk0bcXXSFgtkYPuOU8mOl6xVWxnTPKPzp64/export?format=html"
 ];
 const DOC_TITLES = ["Lectura 1","Lectura 2"];
 
@@ -230,9 +230,28 @@ async function loadDoc(index){
 }
 function renderTextAsHTML(text){
   if(!bookContent) return;
-  const paras = text.split(/\n{2,}/g).map(p=>p.trim()).filter(Boolean);
-  const html = paras.map(p => `<p>${escapeHtml(p).replace(/\n/g,"<br>")}</p>`).join("");
+  
+  // Limpia el HTML de Google Docs: remueve metadatos innecesarios (head, scripts, etc.)
+  // y extrae solo el body principal para evitar problemas de estilo o seguridad.
+  let html = text.replace(/<head>[\s\S]*?<\/head>/gi, '')  // Quita <head>
+                 .replace(/<script>[\s\S]*?<\/script>/gi, '')  // Quita scripts (seguridad)
+                 .replace(/<style>[\s\S]*?<\/style>/gi, '')  // Quita estilos inline si quieres (opcional)
+                 .replace(/<!DOCTYPE[^>]*>/gi, '')  // Quita DOCTYPE
+                 .trim();
+  
+  // Si no hay body, envuélvelo en uno simple
+  if (!/<body/i.test(html)) {
+    html = `<div>${html}</div>`;
+  } else {
+    html = html.replace(/<body[^>]*>([\s\S]*?)<\/body>/i, '$1');  // Extrae contenido del body
+  }
+  
+  // Escapa solo si es necesario (pero para HTML de confianza como Google Docs, inserta directo)
+  // Nota: No uses escapeHtml completo aquí, ya que rompería las tags <img>, <b>, etc.
   bookContent.innerHTML = html;
+  
+  // Opcional: Ajusta estilos para que se vea bien en tu tema oscuro
+  // Puedes agregar esto vía CSS o JS: bookContent.querySelectorAll('img').forEach(img => img.style.maxWidth = '100%');
 }
 prevBtn && prevBtn.addEventListener("click", ()=>{ if(currentDocIndex>0){ currentDocIndex--; loadDoc(currentDocIndex); } });
 nextBtn && nextBtn.addEventListener("click", ()=>{ if(currentDocIndex < DOCS_TXT_URLS.length - 1){ currentDocIndex++; loadDoc(currentDocIndex); } });
@@ -715,4 +734,5 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
