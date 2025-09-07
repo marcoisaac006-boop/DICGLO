@@ -21,7 +21,6 @@
     <img class="girl" src="https://i.ibb.co/W5ssvRf/girl.png" alt="girl on bike">
     <img class="trees" src="https://i.ibb.co/QrMyLYc/trees.png" alt="trees">
   </div>
-
   <!-- === SECCIONES === -->
   <!-- 1) Bienvenida -->
   <section id="welcome" class="section active">
@@ -29,7 +28,6 @@
     <p class="subtitle">Un viaje educativo y divertido</p>
     <button id="enter-button" class="button">🚀 INGRESAR</button>
   </section>
-
  <!-- Agrega esto justo después de la sección #welcome -->
 <div id="start-modal" class="modal-overlay">
   <div class="modal-content">
@@ -38,7 +36,6 @@
     <button id="confirm-user" class="button">Confirmar</button>
   </div>
 </div>
-
   <!-- 2) Escena Neón reactiva al audio -->
   <section id="neon-section" class="section">
     <div class="neon-overlay">
@@ -48,7 +45,6 @@
     </div>
     <audio id="audio1" preload="auto" crossorigin="anonymous"></audio>
   </section>
-
   <!-- 3) Lector (Google Docs TXT) -->
   <section id="reader-section" class="section">
     <div class="reader-overlay">
@@ -57,19 +53,15 @@
           <h3 id="docTitle">Cargando documento…</h3>
           <div id="pageIndicator" class="page-indicator">Página 1</div>
         </header>
-
         <main id="bookContent" class="reader-content" aria-live="polite">
           Cargando contenido...
         </main>
-
         <button id="prevPage" class="pager left" aria-label="Página anterior">◄</button>
         <button id="nextPage" class="pager right" aria-label="Página siguiente">►</button>
-
         <button id="finishReading" class="button finish-button">✅ Terminé de leer</button>
       </div>
     </div>
   </section>
-
   <!-- 4) Examen (preguntas + juegos) -->
   <section id="questions-section" class="section">
        <!-- Añade estos elementos justo antes del cierre de la sección -->
@@ -80,11 +72,9 @@
     <form id="exam-form" class="exam-card" novalidate action="https://formspree.io/f/mjkejylw" method="POST">
       <h2>📝 Examen Integrado</h2>
       <p class="exam-note">Lee con atención y completa todas las secciones. Al final presiona <strong>“Enviar respuestas”</strong>.</p>
-
       <!-- A) Geografía del Perú -->
       <fieldset class="block" data-required>
         <legend>A. Geografía del Perú</legend>
-
         <div class="question">
           <p>1. ¿Cuál es la capital de Perú?</p>
           <div class="options">
@@ -93,7 +83,6 @@
             <label><input type="radio" name="q1" value="C"> C) Arequipa</label>
           </div>
         </div>
-
         <div class="question">
           <p>2. ¿Cuál es el océano que baña las costas de Perú?</p>
           <div class="options">
@@ -104,7 +93,6 @@
             <label><input type="radio" name="q2" value="C"> C) Índico</label>
           </div>
         </div>
-
         <div class="question">
           <p>3. ¿Cuál es el plato típico de Perú?</p>
           <div class="options">
@@ -114,19 +102,17 @@
           </div>
         </div>
       </fieldset>
-
       <!-- B) Comprensión lectora -->
       <fieldset class="block" data-required>
         <legend>B. Comprensión lectora</legend>
         <article class="reading">
           <h4>Fragmento</h4>
           <p>
-            «En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía 
-            un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor...» 
+            «En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía
+            un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor...»
           </p>
           <small>(Miguel de Cervantes, <em>Don Quijote de la Mancha</em>, dominio público)</small>
         </article>
-
         <div class="question">
           <p>4. ¿Qué tipo de personaje se describe al inicio del fragmento?</p>
           <div class="options">
@@ -135,7 +121,6 @@
             <label><input type="radio" name="q4" value="C"> C) Un estudiante</label>
           </div>
         </div>
-
         <div class="question">
           <p>5. ¿Qué elemento NO aparece en la lista de pertenencias?</p>
           <div class="options">
@@ -145,12 +130,10 @@
           </div>
         </div>
       </fieldset>
-
       <!-- C) Ordena la oración (drag & drop) -->
       <fieldset class="block" data-required data-correct="requerida" data-answer="En,un,lugar,de,la,Mancha,vivía,un,hidalgo">
         <legend>C. Ordena la oración</legend>
         <p class="hint">Arrastra las palabras para formar una oración coherente:</p>
-
         <ul id="order-list" class="order-list" aria-label="Ordenar palabras">
           <li draggable="true" data-word="En">En</li>
           <li draggable="true" data-word="un">un</li>
@@ -163,7 +146,6 @@
           <li draggable="true" data-word="hidalgo">hidalgo</li>
         </ul>
       </fieldset>
-
       <!-- D) Vocabulario -->
       <fieldset class="block" data-required>
         <legend>D. Vocabulario</legend>
@@ -177,7 +159,6 @@
               <option value="C">Perro ligero para caza</option>
             </select>
           </label>
-
           <label class="match-row">
             <span class="term">adarga</span>
             <select name="v2" required>
@@ -187,7 +168,6 @@
               <option value="C">Comida típica</option>
             </select>
           </label>
-
           <label class="match-row">
             <span class="term">galgo</span>
             <select name="v3" required>
@@ -199,7 +179,6 @@
           </label>
         </div>
       </fieldset>
-
       <!-- Campos hidden para Formspree -->
       <input type="hidden" id="user-name-hidden" name="userName" value="">
       <input type="hidden" id="order-hidden" name="orderSentence" value="">
@@ -207,32 +186,28 @@
       <textarea id="logs-summary-hidden" name="logsSummary" style="display:none;"></textarea>
       <input type="email" name="_replyto" value="marcoisaac006@gmail.com" style="display:none;"> <!-- Opcional: cambia a tu email -->
       <input type="text" name="_gotcha" style="display:none;"> <!-- Anti-spam de Formspree -->
-
       <!-- Botón único -->
       <div class="actions">
         <button type="submit" id="submit-button" class="button submit-button">✅ Enviar respuestas</button>
       </div>
     </form>
-
     <audio id="audio3" preload="auto" crossorigin="anonymous"></audio>
   </section>
-
 <!-- Overlay para envío exitoso -->
   <div id="submission-overlay" class="submission-overlay" style="display: none;">
     <div class="submission-message">🎉 ¡Respuestas enviadas! 🎉</div>
   </div>
-
    <!-- Nuevo footer agregado fuera de los contenedores (secciones) -->
   <footer class="footer">
     <p>Desarrollado por la especialidad de comunicación VI</p>
   </footer>
-
   <!-- Librería Three.js -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <!-- Lógica de la app -->
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
