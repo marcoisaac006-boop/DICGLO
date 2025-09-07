@@ -103,6 +103,36 @@ h1{font-size:3rem;color:var(--accent-3);text-shadow:0 3px 6px rgba(0,0,0,.6)}
   flex:1;overflow-y:auto;color:var(--text-1);line-height:1.8;font-size:1.05rem;
   padding:18px;text-align:left;border-radius:8px;background:transparent
 }
+/* Envoltura de texto alrededor de imágenes (como en Google Docs) */
+.reader-content img {
+  float: right;  /* Flota la imagen a la derecha, texto envuelve por izquierda */
+  max-width: 35%;  /* Limita el ancho para que no ocupe todo (ajusta si quieres más grande, ej. 40%) */
+  height: auto;  /* Mantiene proporción */
+  margin: 0 0 1em 1em;  /* Espacio: abajo y izquierda para que el texto fluya bien */
+  border-radius: 8px;  /* Bordes redondeados opcionales, para que se vea bonito en tu tema */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);  /* Sombra sutil para resaltar */
+  display: block;  /* Evita que sea inline-block problemático */
+}
+
+/* Limpia el float después de la imagen para que el siguiente párrafo no se pegue */
+.reader-content::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Si hay múltiples imágenes o quieres variar (opcional: para izquierda) */
+/* .reader-content img.left-float { float: left; margin: 0 1em 1em 0; } */  /* Descomenta si alguna imagen va a la izquierda */
+
+/* Responsive: en móviles, imágenes full-width sin float */
+@media (max-width: 768px) {
+  .reader-content img {
+    float: none;  /* Quita el float en pantallas pequeñas */
+    max-width: 100%;
+    margin: 1em auto;  /* Centra en móviles */
+    display: block;
+  }
+}
 .pager{
   position:absolute;top:50%;transform:translateY(-50%);
   width:44px;height:44px;border-radius:50%;border:none;cursor:pointer;font-size:1.2rem;font-weight:700;
@@ -316,3 +346,4 @@ h1{font-size:3rem;color:var(--accent-3);text-shadow:0 3px 6px rgba(0,0,0,.6)}
   z-index: 20; /* Por encima de las secciones */
   font-size: 0.9rem;
 }
+
