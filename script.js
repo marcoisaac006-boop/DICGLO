@@ -587,8 +587,8 @@ examForm && examForm.addEventListener("submit", (e)=>{
   // Evaluar todo y sumar
   evaluateAllNow();
 
-  // Deshabilitar formulario para evitar cambios posteriores
-  Array.from(examForm.elements).forEach(el => el.disabled = true);
+  // Cambio clave: Solo deshabilitar el botón de envío (no todos los elementos)
+  if (submitButton) submitButton.disabled = true;
 
   // Mostrar overlay de envío exitoso
   const submissionOverlay = document.getElementById('submission-overlay');
@@ -715,3 +715,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
