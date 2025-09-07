@@ -566,7 +566,93 @@ const style = document.createElement("style");
 style.textContent = `.block.incomplete{ outline:2px dashed #ffd166; box-shadow:0 0 0 4px #ffd16622 inset; }`;
 document.head.appendChild(style);
 /* Inicial (imprime resumen de carga) */
-document.addEventListener("DOMContentLoaded
+document.addEventListener("DOMContentLoaded", ()=>{
+  // refrescar referencia a orderList por si cambió
+  orderList = document.getElementById("order-list");
+  // Mostrar modal de inicio si existe
+  if(startModal) startModal.style.display = "flex";
+  // Si el hidden ya tiene valor (por ejemplo recarga), sincronizar
+  if(userNameHidden && userNameHidden.value){ userName = userNameHidden.value; }
+  printInitialSummary();
+});
+// Confirmación de nombre (si existe el botón/input)
+if(confirmUserButton){
+  confirmUserButton.addEventListener("click", () => {
+    const val = userNameInput ? userNameInput.value.trim() : (userNameHidden ? userNameHidden.value.trim() : "");
+    userName = val || "";
+    if (userName) {
+      if(userNameHidden) userNameHidden.value = userName;
+      if(startModal) startModal.style.display = "none";
+      console.log(`${getUserNameForLogs()} — Nombre confirmado.`);
+      // Reimprimir resumen ahora que hay usuario
+      printInitialSummary();
+    } else {
+      alert("Por favor ingresa tu nombre.");
+    }
+  });
+}
+// Configuración del temporizador
+let timeLeft = 120; // Cambio: 2 minutos en segundos (corregido de 600)
+let timerInterval;
+const timerCircle = document.getElementById('timerCircle');
+const timeUpMessage = document.getElementById('timeUpMessage');
+let isSubmitted = false; // Cambio: Bandera nueva para desactivar el mensaje
+// Función para actualizar el temporizador
+function updateTimer() {
+  const minutes = Math.floor(timeLeft / 60);
+  let seconds = timeLeft % 60;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
+  timerCircle.textContent = `${minutes}:${seconds}`;
+  if (timeLeft <= 0) {
+    clearInterval(timerInterval);
+    timerCircle.style.display = 'none';
+    // Cambio: Solo mostrar mensaje si NO se ha enviado el formulario
+    if (!isSubmitted) {
+      timeUpMessage.style.display = 'flex';
+    }
+  } else {
+    timeLeft--;
+  }
+}
+// Mostrar el círculo del temporizador en el centro inicialmente
+function showTimer() {
+  timerCircle.style.top = '50%';
+  timerCircle.style.left = '50%';
+  timerCircle.style.transform = 'translate(-50%, -50%)';
+  timerCircle.style.display = 'flex';
+  // Mover el círculo a una esquina después de 3 segundos
+  setTimeout(() => {
+    timerCircle.style.top = '20px';
+    timerCircle.style.left = 'auto';
+    timerCircle.style.right = '20px';
+    timerCircle.style.transform = 'none';
+  }, 2000);
+  // Comenzar el temporizador
+  timerInterval = setInterval(updateTimer, 1000);
+}
+// Observar cambios en la sección de preguntas para iniciar el temporizador
+document.addEventListener('DOMContentLoaded', () => {
+  const questionsSection = document.getElementById('questions-section');
+  if (questionsSection) {
+    // Observa cambios en los atributos de la sección de preguntas
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.attributeName === "class") {
+          const attributeValue = mutation.target.getAttribute(mutation.attributeName);
+          if (attributeValue.includes("active")) {
+            showTimer();
+            observer.disconnect(); // Desconectar el observador una vez que se haya llamado a showTimer
+          }
+        }
+      });
+    });
+    observer.observe(questionsSection, {
+      attributes: true,
+      attributeFilter: ["class"]
+    });
+  }
+});
+
 
 
 
