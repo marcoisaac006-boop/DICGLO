@@ -302,3 +302,17 @@ h1{font-size:3rem;color:var(--accent-3);text-shadow:0 3px 6px rgba(0,0,0,.6)}
   color: white;
   text-align: center;
 }
+
+/* Nuevo estilo para el footer */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: var(--text-1);
+  z-index: 20; /* Por encima de las secciones */
+  font-size: 0.9rem;
+}
