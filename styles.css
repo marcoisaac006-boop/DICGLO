@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap');
-
 :root{
   --bg-1:#0f2027;
   --bg-2:#203a43;
@@ -14,7 +13,6 @@
   --ring:#00ffff1f;
   --shadow:rgba(0,0,0,.45);
 }
-
 /* Reset + base */
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden}
@@ -30,7 +28,6 @@ body{
   50%{background-position:100% 50%}
   100%{background-position:0% 50%}
 }
-
 /* === Fondo + hojas (idéntico a tu versión, no tocar) === */
 .background{position:fixed;inset:0;width:100%;height:100vh;overflow:hidden;z-index:-1;pointer-events:none}
 .background .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
@@ -53,15 +50,14 @@ body{
 .leaves .set div:nth-child(6){left:90%;animation:animateLeaf 12s linear infinite}
 .leaves .set div:nth-child(7){left:60%;animation:animateLeaf 14s linear infinite}
 .leaves .set div:nth-child(8){left:20%;animation:animateLeaf 15s linear infinite}
-@keyframes animateLeaf{ 
-0%{opacity:0;top:-10%;transform:translateX(20px) rotate(0deg)} 
-10%{opacity:1} 
-20%{transform:translateX(-20px) rotate(45deg)} 
-40%{transform:translateX(-20px) rotate(90deg)} 
-60%{transform:translateX(20px) rotate(180deg)} 
-80%{transform:translateX(-20px) rotate(45deg)} 
+@keyframes animateLeaf{
+0%{opacity:0;top:-10%;transform:translateX(20px) rotate(0deg)}
+10%{opacity:1}
+20%{transform:translateX(-20px) rotate(45deg)}
+40%{transform:translateX(-20px) rotate(90deg)}
+60%{transform:translateX(20px) rotate(180deg)}
+80%{transform:translateX(-20px) rotate(45deg)}
 100%{top:110%;transform:translateX(20px) rotate(225deg)} }
-
 /* Secciones */
 .section{
   position:fixed;inset:0;
@@ -86,7 +82,6 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
   transition:transform .18s ease,box-shadow .18s ease;font-weight:600
 }
 .button:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.35)}
-
 /* Neon */
 .neon-overlay{
   width:80vw;
@@ -111,7 +106,6 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
   width:100%;
   height:100%;
   display:block}
-
 /* Lector */
 .reader-overlay{
   width:84vw;
@@ -150,7 +144,22 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
   padding:18px;
   text-align:left;
   border-radius:8px;
-  background:transparent
+  background:transparent;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+.reading-text {
+  flex: 1;
+  max-width: 65%; /* Limita el ancho del texto para dejar espacio a la imagen */
+  word-wrap: break-word; /* Asegura que el texto se ajuste bien */
+}
+
+.reading-image {
+  width: 250px; /* Ancho fijo para la imagen */
+  height: auto;
+  object-fit: cover; /* Asegura que la imagen se ajuste sin distorsionarse */
+  align-self: flex-start; /* Alinea la imagen al inicio verticalmente */
 }
 .pager{
   position:absolute;top:50%;
@@ -174,7 +183,6 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
 .finish-button{margin-top:12px;
   align-self:center;
   padding:10px 24px}
-
 /* Examen (laptops) */
 .exam-card{
   width:90vw;
@@ -191,7 +199,6 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
 }
 .exam-card h2{font-size:1.6rem}
 .exam-note{color:var(--text-2);font-size:.95rem}
-
 .block{
   border:1px solid #ffffff22;
   border-radius:12px;
@@ -200,7 +207,6 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
   box-shadow:inset 0 0 0 1px #ffffff0d
 }
 .block legend{padding:0 6px;color:var(--accent-3);font-weight:700}
-
 .question{margin:12px 0}
 .options label{
   display:block;
@@ -213,7 +219,6 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
 }
 .options input[type="radio"]{transform:scale(1.15);margin-right:8px}
 .options label:hover{background:#ffffff1a}
-
 .reading{
   background:#ffffff0f;
   border:1px solid #ffffff1a;
@@ -222,9 +227,7 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
   margin-bottom:10px
 }
 .reading h4{color:var(--text-2);margin-bottom:6px}
-
 .hint{color:#c9ebff;font-size:.95rem;margin-bottom:8px}
-
 .order-list{
   list-style:none;
   display:flex;
@@ -246,7 +249,6 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
   box-shadow:0 4px 10px rgba(0,0,0,.25)
 }
 .order-list li:active{cursor:grabbing}
-
 .match-grid{
   display:grid;
   grid-template-columns:1fr;
@@ -271,7 +273,6 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
   border-radius:10px;
   padding:8px 10px
 }
-
 .actions{
 display:flex;
 justify-content:center;
@@ -279,34 +280,35 @@ margin-top:6px}
 .message{display:none;margin-top:8px;font-size:1.05rem}
 .message.warning{color:#ffd166}
 .message.success{color:var(--accent-3)}
-
 /* Scroll interno para examen en laptops */
 #questions-section .exam-card{overflow:auto}
-
 /* Responsive */
-@media (max-width: 900px){
-  .neon-overlay{height:68vh}
-  .reader-overlay{height:70vh}
-  .match-row select{width:100%}
-}
-@media (max-width: 480px){
-  h1{font-size:2rem}
-  .neon-overlay,.reader-overlay{width:94vw;height:66vh;padding:10px}
-  .pager{width:38px;height:38px}
+/* Responsive */
+@media (max-width: 900px) {
+  .neon-overlay { height: 68vh; }
+  .reader-overlay { height: 70vh; }
+  .match-row select { width: 100%; }
+  .reader-content { flex-direction: column; } /* Apila texto e imagen en pantallas medianas */
+  .reading-text { max-width: 100%; } /* Texto ocupa todo el ancho */
+  .reading-image { width: 100%; max-width: 250px; margin: 0 auto; } /* Imagen centrada */
 }
 
+@media (max-width: 480px) {
+  h1 { font-size: 2rem; }
+  .neon-overlay, .reader-overlay { width: 94vw; height: 66vh; padding: 10px; }
+  .pager { width: 38px; height: 38px; }
+  .reader-content { gap: 10px; } /* Reduce el espacio entre texto e imagen en móviles */
+}
 /* 🎨 Diseño de la barra de scroll */
 ::-webkit-scrollbar {
-  width: 12px;              /* ancho de la barra vertical */
-  height: 12px;             /* alto de la barra horizontal (si existiera) */
+  width: 12px; /* ancho de la barra vertical */
+  height: 12px; /* alto de la barra horizontal (si existiera) */
 }
-
 /* Fondo de la barra */
 ::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05); 
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
 }
-
 /* "Thumb" - la parte que se mueve */
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(180deg, #ffffff, #ffffff);
@@ -314,12 +316,10 @@ margin-top:6px}
   border: 2px solid rgba(0, 0, 0, 0.2); /* espacio que da efecto de separación */
   transition: background 0.3s ease;
 }
-
 /* Hover sobre el "thumb" */
 ::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(180deg, #ffffff, #ffffff);
 }
-
 /* Agrega esto al final de tu CSS existente */
 .modal-overlay {
   position: fixed;
@@ -333,7 +333,6 @@ margin-top:6px}
   align-items: center;
   z-index: 100;
 }
-
 .modal-content {
   background-color: white;
   padding: 2rem;
@@ -343,11 +342,9 @@ margin-top:6px}
   max-width: 400px;
   width: 90%;
 }
-
 .modal-content h3 {
   margin-bottom: 1rem;
 }
-
 .modal-content input {
   width: 100%;
   padding: 0.5rem;
@@ -355,7 +352,6 @@ margin-top:6px}
   border: 1px solid #ccc;
   border-radius: 5px;
 }
-
 /* Estilo para el círculo del temporizador */
   .timer-circle {
     position: fixed;
@@ -373,7 +369,6 @@ margin-top:6px}
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     display: none; /* Inicialmente oculto */
   }
-
   /* Mensaje de tiempo agotado */
   .time-up-message {
     position: fixed;
@@ -390,7 +385,6 @@ margin-top:6px}
     font-size: 24px;
     z-index: 1001;
   }
-
   /* Overlay para envío exitoso */
 .submission-overlay {
   position: fixed;
@@ -404,13 +398,11 @@ margin-top:6px}
   align-items: center;
   z-index: 10000; /* Asegura que esté por encima de todo */
 }
-
 .submission-message {
   font-size: 3rem;
   color: white;
   text-align: center;
 }
-
 /* Nuevo estilo para el footer */
 .footer {
   position: fixed;
@@ -424,5 +416,6 @@ margin-top:6px}
   z-index: 20; /* Por encima de las secciones */
   font-size: 0.9rem;
 }
+
 
 
