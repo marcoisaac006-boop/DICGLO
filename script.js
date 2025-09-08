@@ -652,6 +652,133 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+// Reemplaza todo el código del drag&drop con esta versión corregida:
+
+document.addEventListener("DOMContentLoaded", function() {
+  const dragImgs = document.querySelectorAll('.drag-img');
+  const dropTargets = document.querySelectorAll('.drop-target');
+  let draggedImg = null;
+
+  dragImgs.forEach(img => {
+    img.addEventListener('dragstart', function(e) {
+      draggedImg = img;
+      
+      // SOLUCIÓN DEFINITIVA: Usar directamente la imagen original redimensionada
+      e.dataTransfer.setData('text/plain', img.dataset.answer);
+      e.dataTransfer.effectAllowed = 'move';
+      
+      // Crear elemento clon pequeño para el arrastre
+      const dragElement = img.cloneNode(true);
+      dragElement.style.width = '60px';
+      dragElement.style.height = '60px';
+      dragElement.style.position = 'absolute';
+      dragElement.style.top = '-200px';
+      dragElement.style.left = '-200px';
+      dragElement.style.pointerEvents = 'none';
+      dragElement.style.zIndex = '-1';
+      dragElement.style.borderRadius = '8px';
+      dragElement.style.border = '2px solid #fff';
+      dragElement.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+      
+      // Agregar temporalmente al DOM
+      document.body.appendChild(dragElement);
+      
+      // Configurar como imagen de arrastre
+      e.dataTransfer.setDragImage(dragElement, 30, 30);
+      
+      // Limpiar después del dragstart
+      setTimeout(() => {
+        if (document.body.contains(dragElement)) {
+          document.body.removeChild(dragElement);
+        }
+      }, 0);
+      
+      // Agregar clase visual durante el arrastre
+      img.classList.add('dragging');
+    });
+    
+    img.addEventListener('dragend', function(e) {
+      // Remover todas las clases visuales
+      img.classList.remove('dragging');
+      document.body.classList.remove('drag-in-progress');
+      const gameArea = document.querySelector('.drag-img-game');
+      if (gameArea) gameArea.classList.remove('dragging-active');
+    });
+  });
+
+  dropTargets.forEach(target => {
+    target.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      target.classList.add('over');
+    });
+    
+    target.addEventListener('dragleave', function(e) {
+      target.classList.remove('over');
+    });
+    
+    target.addEventListener('drop', function(e) {
+      e.preventDefault();
+      target.classList.remove('over');
+      
+      // Solo permite un drop por target
+      if (!target.querySelector('img')) {
+        target.appendChild(draggedImg);
+        
+        // Marcar el input hidden correspondiente
+        const hiddenInput = target.querySelector('input[type="radio"]');
+        const draggedAnswer = draggedImg.dataset.answer;
+        
+        if (hiddenInput && draggedAnswer) {
+          if (hiddenInput.value === draggedAnswer) {
+            hiddenInput.checked = true;
+            
+            // Disparar evento change para que el sistema de puntuación lo detecte
+            const changeEvent = new Event('change', { bubbles: true });
+            hiddenInput.dispatchEvent(changeEvent);
+            
+            console.log(`Imagen "${draggedAnswer}" colocada correctamente en "${target.dataset.correct}"`);
+          } else {
+            console.log(`Imagen "${draggedAnswer}" colocada incorrectamente en "${target.dataset.correct}"`);
+          }
+        }
+        
+        guardarResultadoDragImg();
+      }
+    });
+  });
+
+  function guardarResultadoDragImg() {
+    const result = [];
+    dropTargets.forEach(target => {
+      const img = target.querySelector('img');
+      result.push(img ? img.dataset.answer : "");
+    });
+    const hidden = document.getElementById("drag-img-result");
+    if (hidden) hidden.value = result.join(",");
+  }
+
+  // Permitir devolver imágenes al área de elementos
+  const itemsArea = document.querySelector('.drag-img-items');
+  if (itemsArea) {
+    itemsArea.addEventListener('dragover', function(e) {
+      e.preventDefault();
+    });
+    
+    itemsArea.addEventListener('drop', function(e) {
+      e.preventDefault();
+      if (draggedImg && !itemsArea.contains(draggedImg)) {
+        itemsArea.appendChild(draggedImg);
+        
+        // Desmarcar inputs
+        const allHiddenInputs = document.querySelectorAll('.drop-target input[type="radio"]');
+        allHiddenInputs.forEach(input => input.checked = false);
+        
+        guardarResultadoDragImg();
+        console.log("Imagen devuelta al área de elementos");
+      }
+    });
+  }
+});
 
 
 
