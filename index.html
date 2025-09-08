@@ -179,6 +179,51 @@
           </label>
         </div>
       </fieldset>
+
+             <fieldset class="block" data-required>
+    <legend>E. Relaciona la imagen con la respuesta</legend>
+    <div class="drag-img-game">
+      <div class="drag-img-items">
+        <!-- Imágenes para arrastrar (usa tus URLs o las que ya tienes) -->
+        <img src="https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg"
+             draggable="true"
+             data-answer="desierto"
+             alt="Desierto (Sahara)"
+             class="drag-img">
+        <img src="https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg"
+             draggable="true"
+             data-answer="rosa"
+             alt="Rosa"
+             class="drag-img">
+        <img src="https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg"
+             draggable="true"
+             data-answer="zorro"
+             alt="Zorro"
+             class="drag-img">
+      </div>
+
+      <div class="drag-img-targets">
+        <div class="drop-target" data-correct="desierto">
+          Lugar del encuentro
+          <input type="radio" name="dragImg1" value="desierto" data-correct="requerida" style="display:none;" required>
+        </div>
+
+        <div class="drop-target" data-correct="rosa">
+          La flor que cuida el Principito
+          <input type="radio" name="dragImg2" value="rosa" data-correct="requerida" style="display:none;" required>
+        </div>
+
+        <div class="drop-target" data-correct="zorro">
+          Enseña la lección sobre vínculos
+          <input type="radio" name="dragImg3" value="zorro" data-correct="requerida" style="display:none;" required>
+        </div>
+      </div>
+    </div>
+       
+       <!-- Input para el resultado completo (opcional, para backup) -->
+    <input type="hidden" name="dragImgResult" id="drag-img-result">
+  </fieldset>
+      
       <!-- Campos hidden para Formspree -->
       <input type="hidden" id="user-name-hidden" name="userName" value="">
       <input type="hidden" id="order-hidden" name="orderSentence" value="">
@@ -207,6 +252,7 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
