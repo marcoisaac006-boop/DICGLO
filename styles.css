@@ -136,30 +136,38 @@ text-shadow:0 3px 6px rgba(0,0,0,.6)}
 .page-indicator{
   color:var(--accent-3);
   font-weight:600}
-.reader-content{
-  flex:1;overflow-y:auto;
-  color:var(--text-1);
-  line-height:1.8;
-  font-size:1.05rem;
-  padding:18px;
-  text-align:left;
-  border-radius:8px;
-  background:transparent;
-  display: flex;
-  gap: 20px;
-  align-items: flex-start;
-}
-.reading-text {
+.reader-content {
   flex: 1;
-  max-width: 65%; /* Limita el ancho del texto para dejar espacio a la imagen */
+  overflow-y: auto;
+  color: var(--text-1);
+  line-height: 1.8;
+  font-size: 1.05rem;
+  padding: 18px;
+  text-align: left;
+  border-radius: 8px;
+  background: transparent;
+  /* Quita flex para flujo natural */
+}
+
+.reading-text {
+  /* No necesita flex: 1 ni max-width ahora; el texto fluirá solo */
   word-wrap: break-word; /* Asegura que el texto se ajuste bien */
 }
 
 .reading-image {
   width: 250px; /* Ancho fijo para la imagen */
   height: auto;
-  object-fit: cover; /* Asegura que la imagen se ajuste sin distorsionarse */
-  align-self: flex-start; /* Alinea la imagen al inicio verticalmente */
+  object-fit: cover;
+  float: right; /* Flota la imagen a la derecha; cambia a 'left' si quieres a la izquierda */
+  margin: 0 0 20px 20px; /* Margen: abajo, derecha, arriba, izquierda. Ajusta para espacio alrededor */
+  clear: none; /* Permite que el texto fluya alrededor */
+}
+
+/* Clearfix para el contenedor (evita que colapse) */
+.reader-content::after {
+  content: "";
+  display: table;
+  clear: both;
 }
 .pager{
   position:absolute;top:50%;
@@ -416,6 +424,7 @@ margin-top:6px}
   z-index: 20; /* Por encima de las secciones */
   font-size: 0.9rem;
 }
+
 
 
 
