@@ -215,7 +215,7 @@ function renderReading(reading) {
   const paras = reading.text.split(/\n{2,}/g).map(p => p.trim()).filter(Boolean);
   const html = paras.map(p => `<p>${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("");
   const imgHtml = reading.image ? `<img class="reading-image" src="${reading.image}" alt="Imagen de la lectura">` : '';
-  bookContent.innerHTML = `${imgHtml}<div class="reading-text">${html}</div>`;
+  bookContent.innerHTML = `<div class="reading-text">${imgHtml}${html}</div>`;
 }
 prevBtn && prevBtn.addEventListener("click", ()=>{ if(currentDocIndex>0){ currentDocIndex--; loadDoc(currentDocIndex); } });
 nextBtn && nextBtn.addEventListener("click", ()=>{ if(currentDocIndex < READINGS.length - 1){ currentDocIndex++; loadDoc(currentDocIndex); } });
@@ -779,6 +779,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   }
 });
+
 
 
 
