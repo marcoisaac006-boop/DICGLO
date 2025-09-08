@@ -11,7 +11,7 @@ const READINGS = [
   {
     title: "Lectura 2",
     text: "La historia relata el primer dia de clases de Paco Yunque, un niño\nhumilde hijo de una lavandera, que asiste a la escuela por primera\nvez. Alli se enfrenta a Humberto Grieve, hijo del patron ingles del\npueblo, quien abusa de su poder y privilegios. Durante la jornada,\nHumberto maltrata a Paco, lo insulta y le arrebata sus pertenencias,\nmientras los profesores y autoridades permanecen indiferentes o lo\nfavorecen por ser hijo del rico.",
-     // Cambia este link por el de tu imagen
+    image: "https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg"// Cambia este link por el de tu imagen
   }
 ];
 /******************** ELEMENT SELECTORS (se asume script al final del body) ********************/
@@ -215,7 +215,7 @@ function renderReading(reading) {
   const paras = reading.text.split(/\n{2,}/g).map(p => p.trim()).filter(Boolean);
   const html = paras.map(p => `<p>${escapeHtml(p).replace(/\n/g, "<br>")}</p>`).join("");
   const imgHtml = reading.image ? `<img class="reading-image" src="${reading.image}" alt="Imagen de la lectura">` : '';
-  bookContent.innerHTML = `<div class="reading-text">${html}</div>${imgHtml}`;
+  bookContent.innerHTML = `${imgHtml}<div class="reading-text">${html}</div>`;
 }
 prevBtn && prevBtn.addEventListener("click", ()=>{ if(currentDocIndex>0){ currentDocIndex--; loadDoc(currentDocIndex); } });
 nextBtn && nextBtn.addEventListener("click", ()=>{ if(currentDocIndex < READINGS.length - 1){ currentDocIndex++; loadDoc(currentDocIndex); } });
@@ -652,6 +652,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
 
 
