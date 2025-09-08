@@ -425,6 +425,124 @@ margin-top:6px}
   font-size: 0.9rem;
 }
 
+/* === JUEGO DE ARRASTRAR IMÁGENES - CÓDIGO CONSOLIDADO === */
+
+.drag-img-game {
+  display: flex;
+  gap: 30px;
+  justify-content: space-around;
+  align-items: flex-start;
+  margin: 16px 0;
+}
+
+.drag-img-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Imágenes arrastrables */
+.drag-img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  cursor: grab;
+  border: 2px solid #fff;
+  transition: all 0.2s ease;
+  user-select: none;
+  -webkit-user-drag: element;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
+.drag-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.drag-img:active {
+  cursor: grabbing;
+}
+
+/* Estado durante el arrastre */
+.drag-img.dragging {
+  opacity: 0.5;
+  transform: rotate(5deg) scale(0.95);
+  z-index: 1000;
+}
+
+/* Eliminar cursor durante arrastre */
+.drag-img:active,
+.drag-img.dragging {
+  cursor: none !important;
+}
+
+.drag-img-game.dragging-active * {
+  cursor: none !important;
+}
+
+body.drag-in-progress * {
+  cursor: none !important;
+}
+
+/* Contenedor de zonas de destino */
+.drag-img-targets {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Zonas de destino */
+.drop-target {
+  background: #26344a;
+  color: #fff;
+  border: 2px dashed #ffb703;
+  border-radius: 10px;
+  padding: 20px 18px;
+  min-width: 170px;
+  min-height: 70px;
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.drop-target.over {
+  background: #fb8500;
+  color: #fff;
+  border-style: solid;
+  border-color: #ffb703;
+  box-shadow: 0 0 20px rgba(251, 133, 0, 0.3);
+  transform: scale(1.02);
+}
+
+.drop-target.filled {
+  border-color: #06d6a0;
+  background: #1a4a3a;
+}
+
+/* Imagen cuando está dentro de la zona de destino */
+.drop-target img {
+  width: 60px !important;
+  height: 60px !important;
+  margin-top: 8px;
+  border-radius: 8px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Responsive para dispositivos táctiles */
+@media (pointer: coarse) {
+  .drag-img {
+    -webkit-user-drag: element;
+    -webkit-touch-callout: none;
+  }
+}
+
 
 
 
