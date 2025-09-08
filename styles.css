@@ -424,7 +424,13 @@ margin-top:6px}
   z-index: 20; /* Por encima de las secciones */
   font-size: 0.9rem;
 }
-
+.reader-header h3 {
+  text-align: center;
+  width: 90%;
+  font-size: 2.2rem; /* Aumenta el tamaño del texto */
+  font-weight: bold;  /* Opcional: lo hace más destacado */
+  color: var(--accent-3); /* Opcional: color dorado/amarillo como los títulos principales */
+}
 /* === JUEGO DE ARRASTRAR IMÁGENES - CÓDIGO CONSOLIDADO === */
 
 .drag-img-game {
@@ -542,6 +548,7 @@ body.drag-in-progress * {
     -webkit-touch-callout: none;
   }
 }
+
 
 
 
