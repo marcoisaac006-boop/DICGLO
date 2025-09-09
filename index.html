@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DICGLOs</title>
+  <title>DICGLOS.COM</title>
   <link rel="stylesheet" href="styles.css"/>
 </head>
 <body>
@@ -58,7 +58,7 @@
         </main>
         <button id="prevPage" class="pager left" aria-label="Página anterior">◄</button>
         <button id="nextPage" class="pager right" aria-label="Página siguiente">►</button>
-        <button id="finishReading" class="button finish-button">✅ Terminé de leer</button>
+        <button id="finishReading" class="button finish-button hidden">✅ Terminé de leer</button>
       </div>
     </div>
   </section>
@@ -72,61 +72,59 @@
     <form id="exam-form" class="exam-card" novalidate action="https://formspree.io/f/mjkejylw" method="POST">
       <h2>📝 Examen Integrado</h2>
       <p class="exam-note">Lee con atención y completa todas las secciones. Al final presiona <strong>“Enviar respuestas”</strong>.</p>
-      <!-- A) Geografía del Perú -->
+      <!-- A) Lugares en El Principito -->
       <fieldset class="block" data-required>
-        <legend>A. Geografía del Perú</legend>
+        <legend>A. Comprensión general</legend>
         <div class="question">
-          <p>1. ¿Cuál es la capital de Perú?</p>
+          <p>1. ¿Qué descubrimiento doloroso le revela el geógrafo al Principito sobre su rosa🌹?</p>
           <div class="options">
-            <label><input type="radio" name="q1" value="A" data-correct="requerida" required> A) Lima</label>
-            <label><input type="radio" name="q1" value="B"> B) Cusco</label>
-            <label><input type="radio" name="q1" value="C"> C) Arequipa</label>
+            <label><input type="radio" name="q1" value="A"> a) Que su rosa no es única en el universo.</label>
+            <label><input type="radio" name="q1" value="B" data-correct="requerida" required> B) Que las rosas son efímeras y están destinadas a desaparecer.</label>
+            <label><input type="radio" name="q1" value="C"> C) Que su rosa está enferma y morirá pronto. </label>
+            <label><input type="radio" name="q1" value="D"> D) Que nunca debió haber dejado su planeta. </label>
           </div>
         </div>
         <div class="question">
-          <p>2. ¿Cuál es el océano que baña las costas de Perú?</p>
+          <p>2. ¿Qué solución creativa encuentra el Aviador para dibujar el cordero que le pide el Principito?</p>
           <div class="options">
-            <!-- AQUÍ estaba la diferencia: ahora la alternativa correcta (B - Pacífico)
-                 está marcada con data-correct="requerida" para que sume. -->
-            <label><input type="radio" name="q2" value="A" > A) Atlántico</label>
-            <label><input type="radio" name="q2" value="B" data-correct="requerida" required> B) Pacífico</label>
-            <label><input type="radio" name="q2" value="C"> C) Índico</label>
+            <label><input type="radio" name="q2" value="A" > A) Dibuja un cordero muy detallado y realista.</label>
+            <label><input type="radio" name="q2" value="B" data-correct="requerida" required> B) Dibuja una caja con agujeros explicando que el cordero está dentro.</label>
+            <label><input type="radio" name="q2" value="C"> C) Dibuja varios corderos pequeños juntos.</label>
           </div>
         </div>
         <div class="question">
-          <p>3. ¿Cuál es el plato típico de Perú?</p>
+          <p>3. ¿Cuál es la lección más importante que el zorro le enseña al Principito?</p>
           <div class="options">
-            <label><input type="radio" name="q3" value="A"> A) Ceviche</label>
-            <label><input type="radio" name="q3" value="B"> B) Feijoada</label>
-            <label><input type="radio" name="q3" value="C" data-correct="requerida" required> C) Tacos</label>
+            <label><input type="radio" name="q3" value="A"> A) Que la amistad es temporalidad.</label>
+            <label><input type="radio" name="q3" value="B"> B) Que debe regresar inmediatamente a su planeta.</label>
+            <label><input type="radio" name="q3" value="C" data-correct="requerida" required> C) solo con el corazón se puede ver bien; lo esencial es invisible a los ojos.</label>
           </div>
         </div>
-      </fieldset>
+    </fieldset>
       <!-- B) Comprensión lectora -->
       <fieldset class="block" data-required>
         <legend>B. Comprensión lectora</legend>
         <article class="reading">
-          <h4>Fragmento</h4>
+          <h4>Fragmento (Capítulo XXI):</h4>
           <p>
-            «En un lugar de la Mancha, de cuyo nombre no quiero acordarme, no ha mucho tiempo que vivía
-            un hidalgo de los de lanza en astillero, adarga antigua, rocín flaco y galgo corredor...»
+            «El zorro le revela este secreto, ayudando al Principito a comprender lo que hacía única a su rosa🌹, a pesar de haber visto otras rosas en un jardín, lo que lo entristeció anteriormente.»
           </p>
-          <small>(Miguel de Cervantes, <em>Don Quijote de la Mancha</em>, dominio público)</small>
+          <small>(Antoine de Saint-Exupéry, <em>El Principito</em>)</small>
         </article>
         <div class="question">
-          <p>4. ¿Qué tipo de personaje se describe al inicio del fragmento?</p>
+          <p>5. ¿Qué significado profundo tiene el hecho de que el Principito se entristeciera al ver otras rosas en el jardín?</p>
           <div class="options">
-            <label><input type="radio" name="q4" value="A" data-correct="requerida" required> A) Un mercader adinerado</label>
-            <label><input type="radio" name="q4" value="B"> B) Un hidalgo</label>
-            <label><input type="radio" name="q4" value="C"> C) Un estudiante</label>
+            <label><input type="radio" name="q5" value="A" data-correct="requerida" required> A) Se dio cuenta de que su rosa no era físicamente única.</label>
+            <label><input type="radio" name="q5" value="B"> B) Comprendió que había perdido el tiempo cuidando a su rosa</label>
+            <label><input type="radio" name="q5" value="C"> C) Descubrió que las rosas del jardín eran más hermosas</label>
           </div>
         </div>
         <div class="question">
-          <p>5. ¿Qué elemento NO aparece en la lista de pertenencias?</p>
+          <p>6. ¿Cómo transforma la enseñanza del zorro la percepción del Principito sobre su rosa🌹?</p>
           <div class="options">
-            <label><input type="radio" name="q5" value="A"> A) Rocín</label>
-            <label><input type="radio" name="q5" value="B"> B) Galgo</label>
-            <label><input type="radio" name="q5" value="C" data-correct="requerida" required> C) Armadura completa</label>
+            <label><input type="radio" name="q6" value="A"> A) Le hace entender que debe buscar una rosa nueva.</label>
+            <label><input type="radio" name="q6" value="B"> B) Le demuestra que todas las rosas son exactamente iguales</label>
+            <label><input type="radio" name="q6" value="C" data-correct="requerida" required> C) Le ayuda a comprender que los vínculos emocionales hacen única a su rosa.</label>
           </div>
         </div>
       </fieldset>
@@ -135,15 +133,21 @@
         <legend>C. Ordena la oración</legend>
         <p class="hint">Arrastra las palabras para formar una oración coherente:</p>
         <ul id="order-list" class="order-list" aria-label="Ordenar palabras">
-          <li draggable="true" data-word="En">En</li>
-          <li draggable="true" data-word="un">un</li>
-          <li draggable="true" data-word="lugar">lugar</li>
-          <li draggable="true" data-word="de">de</li>
-          <li draggable="true" data-word="la">la</li>
-          <li draggable="true" data-word="Mancha">Mancha</li>
-          <li draggable="true" data-word="vivía">vivía</li>
-          <li draggable="true" data-word="un">un</li>
-          <li draggable="true" data-word="hidalgo">hidalgo</li>
+    <li draggable="true" data-word="Solo">Solo</li>
+    <li draggable="true" data-word="con">con</li>
+    <li draggable="true" data-word="el">el</li>
+    <li draggable="true" data-word="corazón">corazón</li>
+    <li draggable="true" data-word="se">se</li>
+    <li draggable="true" data-word="puede">puede</li>
+    <li draggable="true" data-word="ver">ver</li>
+    <li draggable="true" data-word="bien">bien</li>
+    <li draggable="true" data-word="lo">lo</li>
+    <li draggable="true" data-word="esencial">esencial</li>
+    <li draggable="true" data-word="es">es</li>
+    <li draggable="true" data-word="invisible">invisible</li>
+    <li draggable="true" data-word="a">a</li>
+    <li draggable="true" data-word="los">los</li>
+    <li draggable="true" data-word="ojos">ojos</li>
         </ul>
       </fieldset>
       <!-- D) Vocabulario -->
@@ -151,78 +155,25 @@
         <legend>D. Vocabulario</legend>
         <div class="match-grid">
           <label class="match-row">
-            <span class="term">hidalgo</span>
+            <span class="term">domesticar</span>
             <select name="v1" required>
               <option value="">Selecciona definición</option>
-              <option value="A" data-correct="requerida" required>Noble de baja categoría</option>
-              <option value="B">Arma de madera</option>
+              <option value="A" data-correct="requerida" required>Crear lazos o vínculos</option>
+              <option value="B">Dibujar un animal</option>
               <option value="C">Perro ligero para caza</option>
             </select>
           </label>
           <label class="match-row">
-            <span class="term">adarga</span>
-            <select name="v2" required>
-              <option value="">Selecciona definición</option>
-              <option value="A" data-correct="requerida" required>Escudo de cuero</option>
-              <option value="B">Caballo de trabajo</option>
-              <option value="C">Comida típica</option>
-            </select>
-          </label>
-          <label class="match-row">
-            <span class="term">galgo</span>
+            <span class="term">efímero</span>
             <select name="v3" required>
               <option value="">Selecciona definición</option>
-              <option value="A" data-correct="requerida" required>Perro corredor</option>
+              <option value="A" data-correct="requerida" required>Que dura poco tiempo</option>
               <option value="B">Sombrero antiguo</option>
-              <option value="C">Moneda medieval</option>
+              <option value="C">Un dibujo infantil</option>
             </select>
           </label>
         </div>
       </fieldset>
-
-             <fieldset class="block" data-required>
-    <legend>E. Relaciona la imagen con la respuesta</legend>
-    <div class="drag-img-game">
-      <div class="drag-img-items">
-        <!-- Imágenes para arrastrar (usa tus URLs o las que ya tienes) -->
-        <img src="https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg"
-             draggable="true"
-             data-answer="desierto"
-             alt="Desierto (Sahara)"
-             class="drag-img">
-        <img src="https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg"
-             draggable="true"
-             data-answer="rosa"
-             alt="Rosa"
-             class="drag-img">
-        <img src="https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg"
-             draggable="true"
-             data-answer="zorro"
-             alt="Zorro"
-             class="drag-img">
-      </div>
-
-      <div class="drag-img-targets">
-        <div class="drop-target" data-correct="desierto">
-          Lugar del encuentro
-          <input type="radio" name="dragImg1" value="desierto" data-correct="requerida" style="display:none;" required>
-        </div>
-
-        <div class="drop-target" data-correct="rosa">
-          La flor que cuida el Principito
-          <input type="radio" name="dragImg2" value="rosa" data-correct="requerida" style="display:none;" required>
-        </div>
-
-        <div class="drop-target" data-correct="zorro">
-          Enseña la lección sobre vínculos
-          <input type="radio" name="dragImg3" value="zorro" data-correct="requerida" style="display:none;" required>
-        </div>
-      </div>
-    </div>
-       
-       <!-- Input para el resultado completo (opcional, para backup) -->
-    <input type="hidden" name="dragImgResult" id="drag-img-result">
-  </fieldset>
       
       <!-- Campos hidden para Formspree -->
       <input type="hidden" id="user-name-hidden" name="userName" value="">
@@ -252,11 +203,6 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
 
 
 
