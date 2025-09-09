@@ -588,7 +588,7 @@ if(confirmUserButton){
   });
 }
 // Configuración del temporizador
-let timeLeft = 300; // Cambio: 2 minutos en segundos (corregido de 600)
+let timeLeft = 480; // Cambio: 8 minutos en segundos (corregido de 480)
 let timerInterval;
 const timerCircle = document.getElementById('timerCircle');
 const timeUpMessage = document.getElementById('timeUpMessage');
@@ -648,6 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
 
 
