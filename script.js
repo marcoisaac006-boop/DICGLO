@@ -1,17 +1,32 @@
 /******************** CONFIG: audios + documentos ********************/
-const AUDIO_1_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1755391887/speechma_audio_Jorge_at_7_50_15_PM_on_August_16th_2025_evao84.mp3";
-const AUDIO_3_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1755391887/speechma_audio_Jorge_at_7_50_15_PM_on_August_16th_2025_evao84.mp3";
+const AUDIO_1_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1757399987/fb7d4f4b-6cce-4c6a-a41d-23804b710d2b_qptaho.mp3";
+const AUDIO_3_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1757417712/63afac4c-f152-4df0-968e-c3a9eabba55c_pxg1ou.mp3";
 /* IMPORTANTE: ahora es manual. Define las lecturas aquí con texto e imagen (cambia los links de imagen según necesites). */
 const READINGS = [
   {
-    title: "Lectura 1",
-    text: "La historia relata el primer dia de clases de Paco Yunque, un niño\nhumilde hijo de una lavandera, que asiste a la escuela por primera\nvez. Alli se enfrenta a Humberto Grieve, hijo del patron ingles del\npueblo, quien abusa de su poder y privilegios. Durante la jornada,\nHumberto maltrata a Paco, lo insulta y le arrebata sus pertenencias,\nmientras los profesores y autoridades permanecen indiferentes o lo\nfavorecen por ser hijo del rico.",
-    image: "https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg" // Cambia este link por el de tu imagen
+    title: "EL PRINCIPITO - Capítulo II",
+    text: "El Aviador, durante un vuelo en solitario, sufre un desperfecto en su avión y aterriza de emergencia en el desierto del Sahara. Allí conoce al Principito, un niño de apariencia de ocho años, rubio y vestido elegantemente, quien le pide que le dibuje un cordero. El Aviador, dudando de sus habilidades artísticas, primero dibuja un elefante dentro de una serpiente, un dibujo de su infancia, pero el Principito insiste en el cordero. Tras varios intentos fallidos, dibuja una caja con agujeros, explicando que el cordero está dentro, y el Principito aprueba el dibujo, llevándoselo consigo.",
+    image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEj1gmH6BrXQz-vG6TiOXFLFE2zSbW0wXoBmpwxDpyhub4AkTzOj0Us-Hpkh9w2OjsRzv8js-pdMR91dujr9fV7cIC-cwls7NAR7bQuqdyBfF3BbYzvai5_YKazi3kBkZlO8IYSt5TgLHEco/s1600/untitled.png" // Sugerencia: cambia por imagen de un desierto o un avión
   },
   {
-    title: "Lectura 2",
-    text: "La historia relata el primer dia de clases de Paco Yunque, un niño\nhumilde hijo de una lavandera, que asiste a la escuela por primera\nvez. Alli se enfrenta a Humberto Grieve, hijo del patron ingles del\npueblo, quien abusa de su poder y privilegios. Durante la jornada,\nHumberto maltrata a Paco, lo insulta y le arrebata sus pertenencias,\nmientras los profesores y autoridades permanecen indiferentes o lo\nfavorecen por ser hijo del rico.",
-    image: "https://res.cloudinary.com/dwzwa3gp0/image/upload/v1747444043/cld-sample-5.jpg"// Cambia este link por el de tu imagen
+    title: "EL PRINCIPITO - Capítulo VIII",
+    text: "El Principito le confiesa al Aviador que en su planeta había una rosa🌹 especial, hermosa pero vanidosa y orgullosa, que despertó su amor ingenuo. Sin embargo, esta relación lo llenó de dudas, ya que la rosa🌹, a pesar de su belleza, era difícil de comprender. El Principito, confundido por los sentimientos y la actitud de la rosa🌹, comienza a cuestionar su amor, lo que eventualmente lo lleva a considerar abandonar su asteroide, buscando respuestas en otros mundos. La rosa🌹 representa la fragilidad de las relaciones y cómo el amor puede ser complicado incluso en su forma más pura.",
+    image: "https://i.pinimg.com/originals/1a/89/37/1a89378aa2486266fffa5f5865216fe7.jpg" // Sugerencia: cambia por imagen de una rosa o flor
+  },
+  {
+    title: "EL PRINCIPITO - Capítulo XV",
+    text: "El Principito visita un planeta habitado por un geógrafo, rodeado de mapas y libros, quien lo confunde con un explorador y le pide detalles de su mundo. Al mencionar a su rosa🌹, el geógrafo le explica que las rosas🌹 son efímeras, destinadas a desaparecer, lo que provoca remordimientos en el Principito por haberla dejado sola. Este encuentro refuerza su nostalgia y preocupación por su rosa🌹, marcando un punto de reflexión en su viaje. El geógrafo simboliza a las personas que acumulan conocimiento sin vivir experiencias reales.",
+    image: "https://www.agirregabiria.net/Principito/15a.jpg" // Sugerencia: cambia por imagen de un mapa o planeta
+  },
+  {
+    title: "EL PRINCIPITO - Capítulo XXI",
+    text: "En la Tierra, el Principito conoce a un zorro que busca un amigo para 'domesticar', es decir, formar un vínculo especial. Ambos se convierten en amigos, y el zorro le enseña al Principito que solo con el corazón se puede ver bien; lo esencial es invisible a los ojos. Al separarse, el zorro le revela este secreto, ayudando al Principito a comprender lo que hacía única a su rosa🌹, a pesar de haber visto otras rosas en un jardín, lo que lo entristeció anteriormente. Esta lección destaca la importancia de los lazos emocionales.",
+    image: "https://i.pinimg.com/736x/6e/b9/f8/6eb9f8f1fcd6321c23dcbff288b2db66--prince.jpg" // Sugerencia: cambia por imagen de un zorro
+  },
+  {
+    title: "EL PRINCIPITO - Capítulo XXVI",
+    text: "El Aviador regresa al día siguiente y encuentra al Principito triste, consciente de que debe regresar a su planeta. Le pide al Aviador que mire las estrellas, pues él vivirá en una de ellas con su rosa🌹, y asegura que su risa resonará en todas. El Aviador lo deja en el suelo, donde el Principito es mordido por una serpiente, muriendo instantáneamente, ya que esta es la única manera de volver a su asteroide y cuidar de su rosa🌹. Este final representa el ciclo de la vida y la amistad eterna.",
+    image: "https://www.sociedadliterariadepinto.cl/wp-content/uploads/2024/05/piloto-principito-1024x637.png" // Sugerencia: cambia por imagen de estrellas o serpiente
   }
 ];
 /******************** ELEMENT SELECTORS (se asume script al final del body) ********************/
@@ -207,7 +222,9 @@ function loadDoc(index){
   docTitleEl && (docTitleEl.textContent = READINGS[index].title || `Documento ${index+1}`);
   pageIndicator && (pageIndicator.textContent = `Página ${index+1} / ${READINGS.length}`);
   if(prevBtn) prevBtn.disabled = index === 0;
-  if(nextBtn) nextBtn.disabled = index === READINGS.length - 1;
+  if (finishReading) {
+  finishReading.classList.toggle('hidden', index !== READINGS.length - 1);
+}
   renderReading(READINGS[index]);
 }
 function renderReading(reading) {
@@ -221,7 +238,7 @@ prevBtn && prevBtn.addEventListener("click", ()=>{ if(currentDocIndex>0){ curren
 nextBtn && nextBtn.addEventListener("click", ()=>{ if(currentDocIndex < READINGS.length - 1){ currentDocIndex++; loadDoc(currentDocIndex); } });
 /******************** EXAMEN: lógica de puntuación y juegos ********************/
 /* Orden correcto fallback */
-const correctOrder = ["En","un","lugar","de","la","Mancha","vivía","un","hidalgo"];
+const correctOrder = ["Solo","con","el","corazón","se","puede","ver","bien","lo","esencial","es","invisible","a","los","ojos" ];
 /* Desordenar y drag & drop - solo si existe orderList */
 (function initOrderListShuffleAndDrag(){
   orderList = document.getElementById("order-list");
@@ -517,15 +534,7 @@ examForm && examForm.addEventListener("submit", (e)=>{
     if(startModal) startModal.style.display = "flex";
     return;
   }
-  if(!allRequiredAnswered()){
-    e.preventDefault(); // Solo prevent si incompleto
-    if(formWarning){
-      formWarning.textContent = "Por favor completa todas las preguntas y actividades antes de enviar.";
-      formWarning.style.display = "block";
-    }
-    // ... (código existente para resaltar bloques incompletos)
-    return;
-  }
+ 
   // Nueva: Actualizar hiddens para Formspree
   // Actualiza hidden de orden (drag&drop)
   const orderItems = document.querySelectorAll('#order-list li');
@@ -550,21 +559,8 @@ examForm && examForm.addEventListener("submit", (e)=>{
   console.log(`Examen enviado. Usuario: ${getUserNameForLogs()}. Puntaje final: ${score}`);
   // NO preventDefault aquí: permite envío a Formspree
 });
-/* Accesibilidad: resaltado al intentar enviar incompleto */
-submitButton && submitButton.addEventListener("click", ()=>{
-  examForm.querySelectorAll("[data-required]").forEach(block=> block.classList.remove("incomplete"));
-  setTimeout(()=>{ if(!allRequiredAnswered()){
-    examForm.querySelectorAll("[data-required]").forEach(block=>{
-      const missingRadio = block.querySelector('input[type="radio"][required]:not(:checked)');
-      const missingSelect = block.querySelector('select[required]:not([value])');
-      if(missingRadio || missingSelect){ block.classList.add("incomplete"); }
-    });
-  }},0);
-});
-/* Estilo visual para incompletos (inyectado vía JS) */
-const style = document.createElement("style");
-style.textContent = `.block.incomplete{ outline:2px dashed #ffd166; box-shadow:0 0 0 4px #ffd16622 inset; }`;
-document.head.appendChild(style);
+
+
 /* Inicial (imprime resumen de carga) */
 document.addEventListener("DOMContentLoaded", ()=>{
   // refrescar referencia a orderList por si cambió
@@ -592,7 +588,7 @@ if(confirmUserButton){
   });
 }
 // Configuración del temporizador
-let timeLeft = 120; // Cambio: 2 minutos en segundos (corregido de 600)
+let timeLeft = 300; // Cambio: 2 minutos en segundos (corregido de 600)
 let timerInterval;
 const timerCircle = document.getElementById('timerCircle');
 const timeUpMessage = document.getElementById('timeUpMessage');
@@ -652,137 +648,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-// Reemplaza todo el código del drag&drop con esta versión corregida:
-
-document.addEventListener("DOMContentLoaded", function() {
-  const dragImgs = document.querySelectorAll('.drag-img');
-  const dropTargets = document.querySelectorAll('.drop-target');
-  let draggedImg = null;
-
-  dragImgs.forEach(img => {
-    img.addEventListener('dragstart', function(e) {
-      draggedImg = img;
-      
-      // SOLUCIÓN DEFINITIVA: Usar directamente la imagen original redimensionada
-      e.dataTransfer.setData('text/plain', img.dataset.answer);
-      e.dataTransfer.effectAllowed = 'move';
-      
-      // Crear elemento clon pequeño para el arrastre
-      const dragElement = img.cloneNode(true);
-      dragElement.style.width = '60px';
-      dragElement.style.height = '60px';
-      dragElement.style.position = 'absolute';
-      dragElement.style.top = '-200px';
-      dragElement.style.left = '-200px';
-      dragElement.style.pointerEvents = 'none';
-      dragElement.style.zIndex = '-1';
-      dragElement.style.borderRadius = '8px';
-      dragElement.style.border = '2px solid #fff';
-      dragElement.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
-      
-      // Agregar temporalmente al DOM
-      document.body.appendChild(dragElement);
-      
-      // Configurar como imagen de arrastre
-      e.dataTransfer.setDragImage(dragElement, 30, 30);
-      
-      // Limpiar después del dragstart
-      setTimeout(() => {
-        if (document.body.contains(dragElement)) {
-          document.body.removeChild(dragElement);
-        }
-      }, 0);
-      
-      // Agregar clase visual durante el arrastre
-      img.classList.add('dragging');
-    });
-    
-    img.addEventListener('dragend', function(e) {
-      // Remover todas las clases visuales
-      img.classList.remove('dragging');
-      document.body.classList.remove('drag-in-progress');
-      const gameArea = document.querySelector('.drag-img-game');
-      if (gameArea) gameArea.classList.remove('dragging-active');
-    });
-  });
-
-  dropTargets.forEach(target => {
-    target.addEventListener('dragover', function(e) {
-      e.preventDefault();
-      target.classList.add('over');
-    });
-    
-    target.addEventListener('dragleave', function(e) {
-      target.classList.remove('over');
-    });
-    
-    target.addEventListener('drop', function(e) {
-      e.preventDefault();
-      target.classList.remove('over');
-      
-      // Solo permite un drop por target
-      if (!target.querySelector('img')) {
-        target.appendChild(draggedImg);
-        
-        // Marcar el input hidden correspondiente
-        const hiddenInput = target.querySelector('input[type="radio"]');
-        const draggedAnswer = draggedImg.dataset.answer;
-        
-        if (hiddenInput && draggedAnswer) {
-          if (hiddenInput.value === draggedAnswer) {
-            hiddenInput.checked = true;
-            
-            // Disparar evento change para que el sistema de puntuación lo detecte
-            const changeEvent = new Event('change', { bubbles: true });
-            hiddenInput.dispatchEvent(changeEvent);
-            
-            console.log(`Imagen "${draggedAnswer}" colocada correctamente en "${target.dataset.correct}"`);
-          } else {
-            console.log(`Imagen "${draggedAnswer}" colocada incorrectamente en "${target.dataset.correct}"`);
-          }
-        }
-        
-        guardarResultadoDragImg();
-      }
-    });
-  });
-
-  function guardarResultadoDragImg() {
-    const result = [];
-    dropTargets.forEach(target => {
-      const img = target.querySelector('img');
-      result.push(img ? img.dataset.answer : "");
-    });
-    const hidden = document.getElementById("drag-img-result");
-    if (hidden) hidden.value = result.join(",");
-  }
-
-  // Permitir devolver imágenes al área de elementos
-  const itemsArea = document.querySelector('.drag-img-items');
-  if (itemsArea) {
-    itemsArea.addEventListener('dragover', function(e) {
-      e.preventDefault();
-    });
-    
-    itemsArea.addEventListener('drop', function(e) {
-      e.preventDefault();
-      if (draggedImg && !itemsArea.contains(draggedImg)) {
-        itemsArea.appendChild(draggedImg);
-        
-        // Desmarcar inputs
-        const allHiddenInputs = document.querySelectorAll('.drop-target input[type="radio"]');
-        allHiddenInputs.forEach(input => input.checked = false);
-        
-        guardarResultadoDragImg();
-        console.log("Imagen devuelta al área de elementos");
-      }
-    });
-  }
-});
-
-
-
-
 
 
 
