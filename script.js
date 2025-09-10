@@ -1,6 +1,6 @@
 /******************** CONFIG: audios + documentos ********************/
-const AUDIO_1_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1757399987/fb7d4f4b-6cce-4c6a-a41d-23804b710d2b_qptaho.mp3";
-const AUDIO_3_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1757417712/63afac4c-f152-4df0-968e-c3a9eabba55c_pxg1ou.mp3";
+const AUDIO_1_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1757464815/281ed712-a4b9-428e-8968-6c3df3b5e76a_gv3ql4.mp3";
+const AUDIO_3_URL = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1757465407/5fee9c6a-6bc4-4a22-9d93-160542f64fbf_n53rmn.mp3";
 /* IMPORTANTE: ahora es manual. Define las lecturas aquí con texto e imagen (cambia los links de imagen según necesites). */
 const READINGS = [
   {
@@ -588,7 +588,7 @@ if(confirmUserButton){
   });
 }
 // Configuración del temporizador
-let timeLeft = 480; // Cambio: 8 minutos en segundos (corregido de 480)
+let timeLeft = 540; // Cambio: 9 minutos en segundos (corregido de 540)
 let timerInterval;
 const timerCircle = document.getElementById('timerCircle');
 const timeUpMessage = document.getElementById('timeUpMessage');
@@ -648,6 +648,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
 
 
 
