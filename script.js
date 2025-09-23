@@ -1,6 +1,6 @@
 // Función para cargar el contenido desde GitHub JSON
 async function loadContent() {
-  const response = await fetch('https://raw.githubusercontent.com/tu-usuario/pdf-content-repo/main/content.json');
+  const response = await fetch('https://raw.githubusercontent.com/marcoisaac006-boop/DICGLO/main/content.json');
   const contentData = await response.json();
   const contentElement = document.getElementById('content');
   contentData.forEach(section => {
@@ -28,6 +28,7 @@ function searchContent() {
 
 // Cargar al iniciar
 window.onload = loadContent;
+
 
 
 
