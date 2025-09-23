@@ -1,213 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DICGLO.COM</title>
-  <link rel="stylesheet" href="styles.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Área de Comunicación - Competencias y Capacidades</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- === FONDO Y ANIMACIONES (NO TOCAR: idéntico a tu versión) === -->
-  <div class="background">
-    <div class="leaves">
-      <div class="set">
-        <div><img src="https://i.ibb.co/S0VnkZq/leaf-01.png" alt="leaf-01"></div>
-        <div><img src="https://i.ibb.co/fFrnHYd/leaf-02.png" alt="leaf-02"></div>
-        <div><img src="https://i.ibb.co/vdx8Jh5/leaf-03.png" alt="leaf-03"></div>
-        <div><img src="https://i.ibb.co/SdcBCvr/leaf-04.png" alt="leaf-04"></div>
-      </div>
-    </div>
-    <img class="bg" src="https://i.ibb.co/rfNqbQG/bg.jpg" alt="background">
-    <img class="girl" src="https://i.ibb.co/W5ssvRf/girl.png" alt="girl on bike">
-    <img class="trees" src="https://i.ibb.co/QrMyLYc/trees.png" alt="trees">
-  </div>
-  <!-- === SECCIONES === -->
-  <!-- 1) Bienvenida -->
-  <section id="welcome" class="section active">
-    <h1>🌟 BIENVENIDO A DICGLO 🌟</h1>
-    <p class="subtitle">Un viaje educativo y divertido</p>
-    <button id="enter-button" class="button">🚀 INGRESAR</button>
-  </section>
- <!-- Agrega esto justo después de la sección #welcome -->
-<div id="start-modal" class="modal-overlay">
-  <div class="modal-content">
-    <h3>Por favor ingresa usuario</h3>
-    <input type="text" id="user-name" placeholder="Tu nombre" required>
-    <button id="confirm-user" class="button">Confirmar</button>
-  </div>
-</div>
-  <!-- 2) Escena Neón reactiva al audio -->
-  <section id="neon-section" class="section">
-    <div class="neon-overlay">
-      <div class="neon-stage">
-        <canvas id="neonCanvas" aria-label="Escena 3D reactiva al audio"></canvas>
-      </div>
-    </div>
-    <audio id="audio1" preload="auto" crossorigin="anonymous"></audio>
-  </section>
-  <!-- 3) Lector (Google Docs TXT) -->
-  <section id="reader-section" class="section">
-    <div class="reader-overlay">
-      <div class="reader-card">
-        <header class="reader-header">
-          <h3 id="docTitle">Cargando documento…</h3>
-          <div id="pageIndicator" class="page-indicator">Página 1</div>
-        </header>
-        <main id="bookContent" class="reader-content" aria-live="polite">
-          Cargando contenido...
-        </main>
-        <button id="prevPage" class="pager left" aria-label="Página anterior">◄</button>
-        <button id="nextPage" class="pager right" aria-label="Página siguiente">►</button>
-        <button id="finishReading" class="button finish-button hidden">✅ Terminé de leer</button>
-      </div>
-    </div>
-  </section>
-  <!-- 4) Examen (preguntas + juegos) -->
-  <section id="questions-section" class="section">
-       <!-- Añade estos elementos justo antes del cierre de la sección -->
-  <div id="timerCircle" class="timer-circle">9:00</div>
-  <div id="timeUpMessage" class="time-up-message">
-    <p>Lo siento, se acabaron tus minutos. 😢</p>
-  </div>
-    <form id="exam-form" class="exam-card" novalidate action="https://formspree.io/f/mjkejylw" method="POST">
-      <h2>📝 Examen Integrado</h2>
-      <p class="exam-note">Lee con atención y completa todas las secciones. Al final presiona <strong>“Enviar respuestas”</strong>.</p>
-      <!-- A) Lugares en El Principito -->
-      <fieldset class="block" data-required>
-        <legend>A. Comprensión general</legend>
-        <div class="question">
-          <p>1. ¿Qué descubrimiento doloroso le revela el geógrafo al Principito sobre su rosa🌹?</p>
-          <div class="options">
-            <label><input type="radio" name="q1" value="A"> a) Que su rosa no es única en el universo.</label>
-            <label><input type="radio" name="q1" value="B" data-correct="requerida" required> B) Que las rosas son efímeras y están destinadas a desaparecer.</label>
-            <label><input type="radio" name="q1" value="C"> C) Que su rosa está enferma y morirá pronto. </label>
-            <label><input type="radio" name="q1" value="D"> D) Que nunca debió haber dejado su planeta. </label>
-          </div>
+    <header>
+        <h1>Área de Comunicación: Competencias y Capacidades</h1>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Busca en el contenido...">
+            <button onclick="searchContent()">Buscar</button>
         </div>
-        <div class="question">
-          <p>2. ¿Qué solución creativa encuentra el Aviador para dibujar el cordero que le pide el Principito?</p>
-          <div class="options">
-            <label><input type="radio" name="q2" value="A" > A) Dibuja un cordero muy detallado y realista.</label>
-            <label><input type="radio" name="q2" value="B" data-correct="requerida" required> B) Dibuja una caja con agujeros explicando que el cordero está dentro.</label>
-            <label><input type="radio" name="q2" value="C"> C) Dibuja varios corderos pequeños juntos.</label>
-          </div>
-        </div>
-        <div class="question">
-          <p>3. ¿Cuál es la lección más importante que el zorro le enseña al Principito?</p>
-          <div class="options">
-            <label><input type="radio" name="q3" value="A"> A) Que la amistad es temporalidad.</label>
-            <label><input type="radio" name="q3" value="B"> B) Que debe regresar inmediatamente a su planeta.</label>
-            <label><input type="radio" name="q3" value="C" data-correct="requerida" required> C) solo con el corazón se puede ver bien; lo esencial es invisible a los ojos.</label>
-          </div>
-        </div>
-    </fieldset>
-      <!-- B) Comprensión lectora -->
-      <fieldset class="block" data-required>
-        <legend>B. Comprensión lectora</legend>
-        <article class="reading">
-          <h4>Fragmento (Capítulo XXI):</h4>
-          <p>
-            «El zorro le revela este secreto, ayudando al Principito a comprender lo que hacía única a su rosa🌹, a pesar de haber visto otras rosas en un jardín, lo que lo entristeció anteriormente.»
-          </p>
-          <small>(Antoine de Saint-Exupéry, <em>El Principito</em>)</small>
-        </article>
-        <div class="question">
-          <p>5. ¿Qué significado profundo tiene el hecho de que el Principito se entristeciera al ver otras rosas en el jardín?</p>
-          <div class="options">
-            <label><input type="radio" name="q5" value="A" data-correct="requerida" required> A) Se dio cuenta de que su rosa no era físicamente única.</label>
-            <label><input type="radio" name="q5" value="B"> B) Comprendió que había perdido el tiempo cuidando a su rosa</label>
-            <label><input type="radio" name="q5" value="C"> C) Descubrió que las rosas del jardín eran más hermosas</label>
-          </div>
-        </div>
-        <div class="question">
-          <p>6. ¿Cómo transforma la enseñanza del zorro la percepción del Principito sobre su rosa🌹?</p>
-          <div class="options">
-            <label><input type="radio" name="q6" value="A"> A) Le hace entender que debe buscar una rosa nueva.</label>
-            <label><input type="radio" name="q6" value="B"> B) Le demuestra que todas las rosas son exactamente iguales</label>
-            <label><input type="radio" name="q6" value="C" data-correct="requerida" required> C) Le ayuda a comprender que los vínculos emocionales hacen única a su rosa.</label>
-          </div>
-        </div>
-      </fieldset>
-      <!-- C) Ordena la oración (drag & drop) -->
-      <fieldset class="block" data-required data-correct="requerida" data-answer="En,un,lugar,de,la,Mancha,vivía,un,hidalgo">
-        <legend>C. Ordena la oración</legend>
-        <p class="hint">Arrastra las palabras para formar una oración coherente:</p>
-        <ul id="order-list" class="order-list" aria-label="Ordenar palabras">
-    <li draggable="true" data-word="Solo">Solo</li>
-    <li draggable="true" data-word="con">con</li>
-    <li draggable="true" data-word="el">el</li>
-    <li draggable="true" data-word="corazón">corazón</li>
-    <li draggable="true" data-word="se">se</li>
-    <li draggable="true" data-word="puede">puede</li>
-    <li draggable="true" data-word="ver">ver</li>
-    <li draggable="true" data-word="bien">bien</li>
-    <li draggable="true" data-word="lo">lo</li>
-    <li draggable="true" data-word="esencial">esencial</li>
-    <li draggable="true" data-word="es">es</li>
-    <li draggable="true" data-word="invisible">invisible</li>
-    <li draggable="true" data-word="a">a</li>
-    <li draggable="true" data-word="los">los</li>
-    <li draggable="true" data-word="ojos">ojos</li>
-        </ul>
-      </fieldset>
-      <!-- D) Vocabulario -->
-      <fieldset class="block" data-required>
-        <legend>D. Vocabulario</legend>
-        <div class="match-grid">
-          <label class="match-row">
-            <span class="term">domesticar</span>
-            <select name="v1" required>
-              <option value="">Selecciona definición</option>
-              <option value="A" data-correct="requerida" required>Crear lazos o vínculos</option>
-              <option value="B">Dibujar un animal</option>
-              <option value="C">Perro ligero para caza</option>
-            </select>
-          </label>
-          <label class="match-row">
-            <span class="term">efímero</span>
-            <select name="v3" required>
-              <option value="">Selecciona definición</option>
-              <option value="A" data-correct="requerida" required>Que dura poco tiempo</option>
-              <option value="B">Sombrero antiguo</option>
-              <option value="C">Un dibujo infantil</option>
-            </select>
-          </label>
-        </div>
-      </fieldset>
-      
-      <!-- Campos hidden para Formspree -->
-      <input type="hidden" id="user-name-hidden" name="userName" value="">
-      <input type="hidden" id="order-hidden" name="orderSentence" value="">
-      <input type="hidden" id="score-hidden" name="finalScore" value="0">
-      <textarea id="logs-summary-hidden" name="logsSummary" style="display:none;"></textarea>
-      <input type="email" name="_replyto" value="marcoisaac006@gmail.com" style="display:none;"> <!-- Opcional: cambia a tu email -->
-      <input type="text" name="_gotcha" style="display:none;"> <!-- Anti-spam de Formspree -->
-      <!-- Botón único -->
-      <div class="actions">
-        <button type="submit" id="submit-button" class="button submit-button">✅ Enviar respuestas</button>
-      </div>
-    </form>
-    <audio id="audio3" preload="auto" crossorigin="anonymous"></audio>
-  </section>
-<!-- Overlay para envío exitoso -->
-  <div id="submission-overlay" class="submission-overlay" style="display: none;">
-    <div class="submission-message">🎉 ¡Respuestas enviadas! 🎉</div>
-  </div>
-   <!-- Nuevo footer agregado fuera de los contenedores (secciones) -->
-  <footer class="footer">
-    <p>Desarrollado por la especialidad de comunicación VI</p>
-  </footer>
-  <!-- Librería Three.js -->
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-  <!-- Lógica de la app -->
-  <script src="script.js"></script>
+    </header>
+    <main id="content">
+        <!-- El contenido se cargará dinámicamente con JS -->
+    </main>
+    <footer>
+        <p>Basado en el PDF "AREA DE COMUNICACION COMPETENCIAs ycapacidades (1).pdf". Hosting sugerido: GitHub Pages para sitios estáticos.</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
 
