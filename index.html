@@ -1,26 +1,86 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Área de Comunicación - Competencias y Capacidades</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>DICGLO — Plataforma educativaS</title>
+
+  <!-- Fuente moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <header>
-        <h1>Área de Comunicación: Competencias y Capacidades</h1>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Busca en el contenido...">
-            <button onclick="searchContent()">Buscar</button>
-        </div>
-    </header>
-    <main id="content">
-        <!-- El contenido se cargará dinámicamente con JS -->
-    </main>
-    <footer>
-        <p>Basado en el PDF "AREA DE COMUNICACION COMPETENCIAs ycapacidades (1).pdf". Hosting sugerido: GitHub Pages para sitios estáticos.</p>
-    </footer>
-    <script src="script.js"></script>
+  <header class="site-header" role="banner">
+    <div class="brand">
+      <h1>DICGLO</h1>
+      <p class="tag">Plataforma educativa — explora, aprende y practica</p>
+    </div>
+
+    <div class="header-right">
+      <!-- Estado visible del asistente: app.js actualizará este texto (id vaStatus) -->
+      <div id="vaStatus" class="assistant-status" aria-live="polite">Inactivo</div>
+
+      <div class="header-actions" role="navigation" aria-label="Acciones de encabezado">
+        <button id="voiceToggle" class="voice-toggle" title="Asistente de voz (activar)">
+          🎤 Asistente
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main" id="mainContent">
+    <!-- Presentación en cuadros (cards) -->
+    <section class="intro-grid" aria-label="Presentación">
+      <article class="card">
+        <h2>¿Qué es DICGLO?</h2>
+        <p>DICGLO es una plataforma educativa para explorar áreas como Matemática y Lenguaje con ejercicios interactivos y recursos multimedia.</p>
+      </article>
+
+      <article class="card">
+        <h2>Cómo funciona</h2>
+        <p>Usa el asistente de voz (arriba a la derecha) o los botones para elegir un área. Encontrarás contenedores con ejercicios y explicaciones.</p>
+      </article>
+
+      <article class="card">
+        <h2>Recursos</h2>
+        <p>Incluye videos explicativos y ejercicios. El video de presentación se configura internamente en el código.</p>
+      </article>
+
+      <article class="card">
+        <h2>Accesibilidad</h2>
+        <p>El asistente responde por voz y la interfaz es simple, con textos legibles y colores suaves.</p>
+      </article>
+    </section>
+
+    <!-- Video de presentación (src viene desde app.js) -->
+    <section class="card video-card" aria-label="Video de presentación">
+      <h2>Video de presentación</h2>
+      <div id="videoContainer" class="video-frame">
+        <!-- El src del iframe se configura desde app.js (const VIDEO_IFRAME_SRC) -->
+        <iframe id="presentationVideo" src="" allowfullscreen loading="lazy" title="Video de presentación"></iframe>
+        <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace embebido en la constante <code>VIDEO_IFRAME_SRC</code> dentro de <strong>app.js</strong>.</div>
+      </div>
+    </section>
+
+    <!-- Área principal donde se muestran las materias y contenedores dinámicos -->
+  
+
+  <!-- Panel del asistente (oculto por defecto; app.js lo maneja) -->
+  <div id="voiceAssistantPanel" class="voice-panel hidden" aria-hidden="true">
+    <div class="voice-controls">    
+      <button id="closeChatBtn" class="control" style="display:none">Cerrar chat</button>
+      <!-- Nota: el estado visible del asistente se muestra ahora en el encabezado -->
+    </div>
+  </div>
+
+  <footer class="site-footer" role="contentinfo">
+    <p>© DICGLO — Plataforma educativa</p>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
+
 
