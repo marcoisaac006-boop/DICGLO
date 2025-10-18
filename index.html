@@ -58,14 +58,14 @@
 <section class="card video-card" aria-label="Video de presentación">
   <h2>Video de presentación</h2>
   <div id="videoContainer" class="video-frame">
-    <!-- Use <video> para archivos mp4. -->
-    <video id="presentationVideo" controls playsinline preload="metadata" title="Video de presentación">
-      <source id="presentationVideoSource" src="" type="video/mp4">
-      Tu navegador no soporta la etiqueta video.
+    <video id="presentationVideo" controls allowfullscreen loading="lazy" title="Video de presentación">
+      <source src="" type="video/mp4">
+      Your browser does not support the video tag.
     </video>
-    <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace en la constante <code>VIDEO_SRC</code> dentro de <strong>app.js</strong>.</div>
+    <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace embebido en la constante <code>VIDEO_IFRAME_SRC</code> dentro de <strong>app.js</strong>.</div>
   </div>
 </section>
+
 
     <!-- Área principal donde se muestran las materias y contenedores dinámicos -->
   
@@ -85,6 +85,7 @@
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
