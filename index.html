@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#ffffff" />
-  <title>DICGLO — Plataforma educativaS</title>
+  <title>DICGLO — Plataforma educativa</title>
 
   <!-- Fuente moderna -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -54,21 +54,21 @@
       </article>
     </section>
 
-   <!-- Video de presentación (antes: iframe) -->
-<section class="card video-card" aria-label="Video de presentación">
-  <h2>Video de presentación</h2>
-  <div id="videoContainer" class="video-frame">
-    <video id="presentationVideo" controls allowfullscreen loading="lazy" title="Video de presentación">
-      <source src="" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace embebido en la constante <code>VIDEO_IFRAME_SRC</code> dentro de <strong>app.js</strong>.</div>
-  </div>
-</section>
+    <!-- Video de presentación (src viene desde app.js) -->
+    <section class="card video-card" aria-label="Video de presentación">
+      <h2>Video de presentación</h2>
+      <div id="videoContainer" class="video-frame">
+        <!-- Cambiado a <video> para MP4 directo -->
+        <video id="presentationVideo" src="" controls loading="lazy" title="Video de presentación" type="video/mp4"></video>
+        <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace MP4 en la constante <code>VIDEO_IFRAME_SRC</code> dentro de <strong>app.js</strong>. O usa un embed de YouTube.</div>
+      </div>
+    </section>
 
-
-    <!-- Área principal donde se muestran las materias y contenedores dinámicos -->
-  
+    <!-- Área principal donde se muestran las materias y contenedores dinámicos (agregado para claridad) -->
+    <section id="subjectsContainer" class="content-card" aria-label="Áreas educativas">
+      <!-- Contenido dinámico se inserta aquí via JS -->
+    </section>
+  </main>
 
   <!-- Panel del asistente (oculto por defecto; app.js lo maneja) -->
   <div id="voiceAssistantPanel" class="voice-panel hidden" aria-hidden="true">
@@ -85,6 +85,7 @@
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
