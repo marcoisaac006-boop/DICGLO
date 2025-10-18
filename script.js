@@ -1,20 +1,6 @@
+const VIDEO_IFRAME_SRC = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1754274776/WhatsApp_Video_2025-08-03_at_9.27.00_PM_xabtde.mp4"; // <-- PON TU ENLACE AQUÍ
 
-/**
- * app.js - versión corregida (reemplazar completamente)
- * - Usa <video> en lugar de iframe para MP4.
- * - Manejo robusto de speechSynthesis.getVoices() y SpeechRecognition.
- * - Mensajes claros y defensivos (no lanza errores si falta API).
- */
-
-/* ===========================
-   CONFIG
-   =========================== */
-// Pon aquí tu enlace MP4 (o deja vacío para que aparezca el placeholder)
-const VIDEO_SRC = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1754274776/WhatsApp_Video_2025-08-03_at_9.27.00_PM_xabtde.mp4";
-
-/* ===========================
-   DATOS (no cambiar salvo quieras)
-   =========================== */
+// --- Datos de materias y temas
 const SUBJECTS = {
   matematica: {
     title: 'Matemática',
@@ -34,65 +20,52 @@ const SUBJECTS = {
   }
 };
 
-/* ===========================
-   SELECTORES / ESTADO
-   =========================== */
+// --- Elementos globales y snapshot del HOME para restaurar
 const main = document.querySelector('main');
 let HOME_HTML = main ? main.innerHTML : '';
 
-/* ===========================
-   VIDEO: asignar <video> correctamente
-   =========================== */
+// Ajustar el video según la constante interna
 function setPresentationVideo() {
-  const videoEl = document.getElementById('presentationVideo');
-  const sourceEl = document.getElementById('presentationVideoSource');
+  const pv = document.getElementById('presentationVideo');
   const placeholder = document.getElementById('videoPlaceholder');
-  if (!videoEl || !sourceEl) return;
-
-  if (VIDEO_SRC && VIDEO_SRC.trim() !== '') {
-    sourceEl.src = VIDEO_SRC;
-    try { videoEl.load(); } catch (e) { /* ignore */ }
+  if (!pv) return;
+  if (VIDEO_IFRAME_SRC && VIDEO_IFRAME_SRC.trim() !== '') {
+    pv.src = VIDEO_IFRAME_SRC;
     if (placeholder) placeholder.style.display = 'none';
   } else {
-    sourceEl.src = '';
-    try { videoEl.load(); } catch (e) { /* ignore */ }
+    pv.src = '';
     if (placeholder) placeholder.style.display = 'block';
   }
 }
 
-/* ===========================
-   UTILIDADES
-   =========================== */
+setPresentationVideo();
+
+// --- utilidades
 function normalizeText(s) {
   return s ? s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : '';
 }
 
-function updateStatus(text) {
-  const s = document.getElementById('vaStatus');
-  if (s) s.textContent = text;
-}
-
-/* ===========================
-   RENDER / NAVEGACIÓN
-   =========================== */
+// Enlaza los botones rápidos que están en la página de inicio
 function bindQuickButtons(){
   document.querySelectorAll('.subject-btn').forEach(b => {
-    // remover listener anterior defensivamente
-    try { b.removeEventListener('click', quickBtnHandler); } catch (e) {}
+    b.removeEventListener('click', quickBtnHandler);
     b.addEventListener('click', quickBtnHandler);
   });
 }
 
 function quickBtnHandler(e){
-  const sub = e.currentTarget ? e.currentTarget.dataset.subject : null;
+  const sub = e.currentTarget.dataset.subject;
   if (sub) navigateToSubject(sub);
+  // CLICK: No hablar cuando el usuario hace click.
 }
 
-// Renderizar la "página" completa de la materia
+bindQuickButtons();
+
+// --- RENDER: reemplaza el contenido principal por una "página" de resultados de la materia
 function renderSubjectFullPage(key) {
   const sub = SUBJECTS[key];
-  if (!sub || !main) return;
-
+  if (!sub) return;
+  // construir HTML de la nueva "página"
   const topicsHtml = sub.topics.map(t => {
     return `<div class="topic-card">
       <h3>${t.title}</h3>
@@ -100,7 +73,6 @@ function renderSubjectFullPage(key) {
       <div style="margin-top:10px"><button class="open-topic" data-title="${t.title}">Abrir</button></div>
     </div>`;
   }).join('');
-
   const html = `
     <section class="card subject-full-page">
       <div class="subject-header" style="display:flex;align-items:center;justify-content:space-between;">
@@ -109,33 +81,37 @@ function renderSubjectFullPage(key) {
           <button id="volverBtn" class="volver">← Volver</button>
         </div>
       </div>
-
       <div class="topics-grid" style="margin-top:12px;display:grid;gap:12px;">
         ${topicsHtml}
       </div>
     </section>
   `;
-
-  main.innerHTML = html;
-
+  // reemplazamos TODO el contenido del <main> (inicio desaparece visualmente)
+  if (main) main.innerHTML = html;
+  // bind a botones del nuevo DOM
   const volver = document.getElementById('volverBtn');
   if (volver) {
     volver.addEventListener('click', () => {
+      // CLICK: al presionar Volver no debe hablar. Redirigimos a la página de selección.
       renderSelectionPage();
+      // no speak()
     });
   }
-
-  main.querySelectorAll('.open-topic').forEach(btn => {
-    btn.addEventListener('click', (ev) => {
-      const title = ev.currentTarget.dataset.title;
+  // Bind a cada "Abrir" de tema
+  if (main) main.querySelectorAll('.open-topic').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const title = btn.dataset.title;
+      // CLICK: no hablar aquí, sólo mostrar/abrir.
       alert(`Abriste: ${title}\nAquí puedes añadir ejercicios para ${title}.`);
     });
   });
-
-  try { history.pushState({subject:key}, '', `#${key}`); } catch (e) {}
+  // guardar estado en el historial para que se comporte como "nueva página"
+  try {
+    history.pushState({subject:key}, '', `#${key}`);
+  } catch (e) { /* ignore */ }
 }
 
-// Renderiza la página de selección (saludo + botones)
+// --- NUEVO: renderiza la "página de selección" que aparece justo después de saludar al usuario por nombre
 function renderSelectionPage() {
   const html = `
     <section class="card selection-page">
@@ -143,97 +119,81 @@ function renderSelectionPage() {
         <h1>¡Hola ${userName || ''}!</h1>
         <p>(Puedes decir por voz: <strong>"Matemática"</strong> o <strong>"Lenguaje"</strong>, o tocar los botones de abajo).</p>
       </div>
-
       <div class="selection-buttons" style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap;">
         <button class="subject-btn large-subject-btn" data-subject="matematica" style="flex:1;min-width:120px;padding:18px;border-radius:10px;font-size:16px;font-weight:700;">Matemática</button>
         <button class="subject-btn large-subject-btn" data-subject="lenguaje" style="flex:1;min-width:120px;padding:18px;border-radius:10px;font-size:16px;font-weight:700;">Lenguaje</button>
       </div>
-
       <div style="margin-top:18px;">
         <button id="seleccionVolver" class="volver">← Volver al inicio</button>
       </div>
     </section>
   `;
-
-  if (!main) return;
-  main.innerHTML = html;
-
-  // bind botones
-  main.querySelectorAll('.subject-btn').forEach(b => {
-    b.addEventListener('click', (e) => {
-      const sub = e.currentTarget.dataset.subject;
-      if (sub) navigateToSubject(sub);
+  if (main) main.innerHTML = html;
+  // bind: botones grandes de materia
+  if (main) {
+    main.querySelectorAll('.subject-btn').forEach(b => {
+      b.addEventListener('click', (e) => {
+        const sub = e.currentTarget.dataset.subject;
+        if (sub) {
+          navigateToSubject(sub);
+          // CLICK: no pauseRecognitionWhileSpeaking, no speak
+        }
+      });
     });
-  });
-
+  }
+  // bind: volver al inicio
   const sv = document.getElementById('seleccionVolver');
   if (sv) sv.addEventListener('click', () => {
     goHome();
+    // CLICK: no speak()
   });
-
-  try { history.pushState({selection:true}, '', '#selection'); } catch(e){}
+  // push state para que el back funcione
+  try {
+    history.pushState({selection:true}, '', '#selection');
+  } catch(e){}
 }
 
-// Restaurar home guardado
+// Restaura la página de inicio guardada en HOME_HTML
 function goHome(pushHistory = true) {
-  if (!main) return;
-  main.innerHTML = HOME_HTML;
+  if (main) main.innerHTML = HOME_HTML;
   // reconfigurar video y botones rápidos
   setPresentationVideo();
-  // espera microtick para enlazar botones que acaben de crearse
-  setTimeout(bindQuickButtons, 40);
-
+  bindQuickButtons();
   if (pushHistory) {
-    try { history.pushState({}, '', location.pathname.replace(location.hash,'')); } catch(e){}
+    try {
+      history.pushState({}, '', location.pathname.replace(location.hash,''));
+    } catch(e){}
   }
 }
 
+// Navegación por voz o click hacia una materia
 function navigateToSubject(key) {
   if (!SUBJECTS[key]) return;
   renderSubjectFullPage(key);
 }
 
-/* ===========================
-   ASISTENTE DE VOZ (SpeechRecognition + speechSynthesis)
-   =========================== */
+// --- Asistente de voz (adaptado)
+// Verificaciones de compatibilidad
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 const synth = window.speechSynthesis || null;
-
 let recognition = null;
 let recognitionActive = false;
 let userName = null;
 let expectingName = true;
 
-// VOCES: preferencia y carga robusta
+// cargar voces
 let preferredVoice = null;
-function choosePreferredVoice(voices) {
-  return voices.find(v => (v.name || '').toLowerCase().includes('google') && (v.lang || '').startsWith('es'))
+function loadVoices() {
+  if (!synth) return;
+  const voices = synth.getVoices();
+  if (!voices || voices.length === 0) return;
+  preferredVoice = voices.find(v => (v.name || '').toLowerCase().includes('google') && (v.lang || '').startsWith('es'))
     || voices.find(v => (v.lang || '').startsWith('es'))
     || voices[0];
 }
 
-function loadVoices() {
-  if (!synth) return;
-  let voices = synth.getVoices();
-  if (voices && voices.length > 0) {
-    preferredVoice = choosePreferredVoice(voices);
-    return;
-  }
-  // Reintentar ligeramente después (algunos navegadores llenan voces asíncronamente)
-  setTimeout(() => {
-    voices = synth.getVoices();
-    if (voices && voices.length > 0) {
-      preferredVoice = choosePreferredVoice(voices);
-    }
-  }, 250);
-}
+if (synth) { synth.onvoiceschanged = loadVoices; loadVoices(); }
 
-if (synth) {
-  synth.onvoiceschanged = loadVoices;
-  loadVoices();
-}
-
-// speak: devuelve Promise para poder esperar
 function speak(text, opts = {}) {
   return new Promise((resolve) => {
     if (!synth) return resolve();
@@ -243,7 +203,7 @@ function speak(text, opts = {}) {
       if (preferredVoice) u.voice = preferredVoice;
       u.onend = () => resolve();
       u.onerror = () => resolve();
-      try { synth.cancel(); } catch (e) {}
+      synth.cancel();
       synth.speak(u);
     } catch (e) { resolve(); }
   });
@@ -255,90 +215,82 @@ function createRecognition() {
   recognition.lang = 'es-ES';
   recognition.continuous = true;
   recognition.interimResults = false;
-
   recognition.onstart = () => { recognitionActive = true; updateStatus('Escuchando...'); };
   recognition.onend = () => {
-    // si debe seguir activo, reiniciamos
     if (recognitionActive) {
-      try { recognition.start(); } catch (e) { updateStatus('Inactivo'); }
+      try { recognition.start(); } catch (e) {}
     } else updateStatus('Inactivo');
   };
   recognition.onerror = (evt) => {
     console.error('SpeechRecognition error', evt);
     updateStatus('Error: ' + (evt.error || 'desconocido'));
   };
-
   recognition.onresult = async (event) => {
-    try {
-      const last = event.results[event.results.length - 1];
-      const texto = (last && last[0] && last[0].transcript) ? last[0].transcript.trim() : '';
-      const lower = normalizeText(texto);
-      console.log('Reconocido:', texto);
-
-      // Capturar nombre si no hay userName
-      if (!userName) {
-        let nombre = null;
-        if (lower.includes('me llamo')) nombre = texto.split(/me llamo/i)[1] || '';
-        else if (lower.includes('mi nombre es')) nombre = texto.split(/mi nombre es/i)[1] || '';
-        else if (lower.match(/^soy\s+/i)) nombre = texto.replace(/^soy\s+/i, '');
-        else {
-          const palabras = lower.split(/\s+/).filter(Boolean);
-          if (expectingName && palabras.length <= 4) nombre = texto;
-        }
-
-        if (nombre) {
-          nombre = nombre.replace(/[.,!?]$/g,'').trim();
-          nombre = nombre.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-          userName = nombre;
-          expectingName = false;
-          const reply = 'Hola ' + userName + '. ¿Qué te gustaría aprender hoy? Aquí tienes la lista de áreas disponibles.';
-          await pauseRecognitionWhileSpeaking(reply);
-          renderSelectionPage();
-          return;
-        }
+    const texto = (event.results[event.results.length - 1][0].transcript || '').trim();
+    const lower = normalizeText(texto);
+    console.log('Reconocido:', texto);
+    // Si aún no tenemos nombre, intentamos capturarlo
+    if (!userName) {
+      let nombre = null;
+      if (lower.includes('me llamo')) nombre = texto.split(/me llamo/i)[1] || '';
+      else if (lower.includes('mi nombre es')) nombre = texto.split(/mi nombre es/i)[1] || '';
+      else if (lower.match(/^soy\s+/i)) nombre = texto.replace(/^soy\s+/i, '');
+      else {
+        const palabras = lower.split(/\s+/).filter(Boolean);
+        if (expectingName && palabras.length <= 4) nombre = texto;
       }
-
-      // Comandos de voz -> abrir selección
-      if (lower.includes('areas disponibles') || lower.includes('áreas disponibles')) {
+      if (nombre) {
+        nombre = nombre.replace(/[.,!?]$/g,'').trim();
+        nombre = nombre.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        userName = nombre;
+        expectingName = false;
+        // RESPUESTA por voz: abrir la página de selección
+        const reply = 'Hola ' + userName + '. Qué te gustaría  aprender  hoy. Aquí tienes la listas de areas disponibles.';
+        await pauseRecognitionWhileSpeaking(reply);
         renderSelectionPage();
-        await pauseRecognitionWhileSpeaking('Estas son las áreas disponibles');
         return;
       }
-
-      // Detectar materias por palabra clave
-      for (const key of Object.keys(SUBJECTS)) {
-        const titleNorm = normalizeText(SUBJECTS[key].title);
-        if (lower.includes(key) || lower.includes(titleNorm)) {
-          navigateToSubject(key);
-          await pauseRecognitionWhileSpeaking(`Perfecto. Estos son los temas disponibles del área de ${SUBJECTS[key].title}`);
-          return;
-        }
-      }
-
-      if (lower.includes('matemat') || lower.includes('mate')) {
-        navigateToSubject('matematica');
-        await pauseRecognitionWhileSpeaking('Perfecto. Estos son los temas disponibles de matemática');
-        return;
-      }
-      if (lower.includes('lengua') || lower.includes('lenguaje') || lower.includes('gramatic')) {
-        navigateToSubject('lenguaje');
-        await pauseRecognitionWhileSpeaking('Perfecto. Estos son los temas disponibles de lenguaje');
-        return;
-      }
-
-      // Volver al inicio
-      if (lower.includes('volver') || lower.includes('inicio')) {
-        goHome();
-        await pauseRecognitionWhileSpeaking('Volviendo al inicio');
-        return;
-      }
-      // Si no coincide nada, no hacemos speak
-    } catch (e) {
-      console.error('Error procesando resultado de reconocimiento:', e);
     }
+    // Detectar frase para mostrar la página de selección (áreas disponibles)
+    if (lower.includes('areas disponibles') || lower.includes('áreas disponibles')) {
+      renderSelectionPage();
+      await pauseRecognitionWhileSpeaking('Estas son las áreas disponibles');
+      return;
+    }
+    // Detectar materias por palabra clave
+    for (const key of Object.keys(SUBJECTS)) {
+      const titleNorm = normalizeText(SUBJECTS[key].title);
+      if (lower.includes(key) || lower.includes(titleNorm)) {
+        navigateToSubject(key);
+        await pauseRecognitionWhileSpeaking(`Perfecto. Estos son los temas disponibles del área de ${SUBJECTS[key].title}`);
+        return;
+      }
+    }
+    // frases compuestas y sinónimos simples
+    if (lower.includes('matemat') || lower.includes('mate')) {
+      navigateToSubject('matematica');
+      await pauseRecognitionWhileSpeaking('Perfecto. Estos son los temas disponibles de matemática');
+      return;
+    }
+    if (lower.includes('lengua') || lower.includes('lenguaje') || lower.includes('gramatic')) {
+      navigateToSubject('lenguaje');
+      await pauseRecognitionWhileSpeaking('Perfecto. Estos son los temas disponibles de lenguaje');
+      return;
+    }
+    // volver al inicio (voz)
+    if (lower.includes('volver') || lower.includes('inicio')) {
+      goHome();
+      await pauseRecognitionWhileSpeaking('Volviendo al inicio');
+      return;
+    }
+    // si no coincide nada, no hacemos speak
   };
-
   return recognition;
+}
+
+function updateStatus(text){
+  const s = document.getElementById('vaStatus');
+  if (s) s.textContent = text;
 }
 
 async function pauseRecognitionWhileSpeaking(textToSay) {
@@ -354,29 +306,29 @@ async function pauseRecognitionWhileSpeaking(textToSay) {
       recognition.start();
       recognitionActive = true;
       updateStatus('Escuchando...');
-    } catch (e) { console.warn('No se pudo reanudar reconocimiento:', e); updateStatus('Inactivo'); }
+    } catch (e) { console.warn('No se pudo reanudar reconocimiento:', e); }
   } else updateStatus('Inactivo');
 }
 
+// openChat ahora acepta opciones para controlar si debe hablar al abrir (útil para distinguir click vs voz)
 function openChat({ speakOnOpen = true } = {}) {
   if (!SpeechRecognition || !synth) {
     updateStatus('Tu navegador no soporta reconocimiento o síntesis de voz.');
     return;
   }
   if (!recognition) recognition = createRecognition();
-  try { recognition.start(); recognitionActive = true; updateStatus('Escuchando...'); } catch (e) { console.warn('No se pudo iniciar reconocimiento:', e); }
-
+  try { recognition.start(); recognitionActive = true; updateStatus('Escuchando...'); } catch (e) {}
+  // Actualizar etiqueta del botón único (voiceToggle)
   const voiceBtn = document.getElementById('voiceToggle');
   if (voiceBtn) {
     voiceBtn.textContent = 'Cerrar chat';
     voiceBtn.setAttribute('aria-pressed','true');
   }
-
+  // Mostrar panel si existe (puede contener controles adicionales)
   const panel = document.getElementById('voiceAssistantPanel');
   if (panel) { panel.classList.remove('hidden'); panel.setAttribute('aria-hidden','false'); }
-
+  // Sólo hablar si la apertura fue por VOZ (speakOnOpen === true)
   if (speakOnOpen) {
-    // preguntar nombre
     pauseRecognitionWhileSpeaking('Hola, bienvenido, ¿cuál es tu nombre?');
   }
 }
@@ -387,69 +339,41 @@ function closeChat() {
     try { recognition.stop(); } catch (e) {}
     try { recognition.abort(); } catch (e) {}
   }
-  try { if (synth) synth.cancel(); } catch (e) {}
-
+  try { synth.cancel(); } catch (e) {}
   const voiceBtn = document.getElementById('voiceToggle');
   if (voiceBtn) {
     voiceBtn.textContent = 'Abrir chat';
     voiceBtn.setAttribute('aria-pressed','false');
   }
-
   const panel = document.getElementById('voiceAssistantPanel');
   if (panel) { panel.classList.add('hidden'); panel.setAttribute('aria-hidden','true'); }
-
   updateStatus('Inactivo');
   userName = null;
   expectingName = true;
 }
 
-/* ===========================
-   INICIALIZACIÓN UI / BOTONES
-   =========================== */
-// Ocultar botones legacy si existen
+// --- Limpieza y nuevo comportamiento: ocultar botones legacy (si existen) y usar solo el botón superior
 const openBtnLegacy = document.getElementById('openChatBtn');
 const closeBtnLegacy = document.getElementById('closeChatBtn');
 if (openBtnLegacy) openBtnLegacy.style.display = 'none';
 if (closeBtnLegacy) closeBtnLegacy.style.display = 'none';
-
-// Configuración del botón superior
+// Configuración del botón único superior (#voiceToggle)
 const voiceToggle = document.getElementById('voiceToggle');
 if (voiceToggle) {
+  // inicializar etiqueta
   voiceToggle.textContent = 'Abrir chat';
   voiceToggle.setAttribute('aria-pressed','false');
-
   voiceToggle.addEventListener('click', () => {
     if (recognitionActive) {
       closeChat();
     } else {
-      // CLICK: abrir por click (se hablará)
+      // CLICK: abrir por click SÍ debe hablar (excepción solicitada)
       openChat({ speakOnOpen: true });
     }
   });
 }
 
-// Enlace inicial de botones rápidos (si existen en HOME)
-setTimeout(() => {
-  try { bindQuickButtons(); } catch (e) {}
-}, 80);
-
-/* ===========================
-   COMPATIBILIDAD / ADVERTENCIAS
-   =========================== */
-function showSupportWarnings() {
-  const missing = [];
-  if (!SpeechRecognition) missing.push('reconocimiento de voz (SpeechRecognition)');
-  if (!synth) missing.push('síntesis de voz (speechSynthesis)');
-  if (missing.length) {
-    console.warn('Faltan APIs en este navegador:', missing.join(', '));
-    updateStatus('Tu navegador no soporta ' + missing.join(' y ') + '. Prueba Chrome/Edge en HTTPS.');
-  }
-}
-showSupportWarnings();
-
-/* ===========================
-   HISTORIAL (back/forward)
-   =========================== */
+// --- Historial: manejar back/forward
 window.addEventListener('popstate', (e) => {
   const state = e.state;
   if (state && state.subject) {
@@ -460,13 +384,6 @@ window.addEventListener('popstate', (e) => {
     goHome(false);
   }
 });
-
-/* ===========================
-   INICIAL: configurar video y guardar HOME_HTML (ya hecho arriba)
-   =========================== */
-try { setPresentationVideo(); } catch (e) { console.warn('No se pudo configurar video al inicio:', e); }
-
-
 
 
 
