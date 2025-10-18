@@ -1,10 +1,10 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#ffffff" />
-  <title>DICGLO — Plataforma educativa</title>
+  <title>DICGLO — Plataforma educativaS</title>
 
   <!-- Fuente moderna -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
@@ -19,6 +19,7 @@
     </div>
 
     <div class="header-right">
+      <!-- Estado visible del asistente: app.js actualizará este texto (id vaStatus) -->
       <div id="vaStatus" class="assistant-status" aria-live="polite">Inactivo</div>
 
       <div class="header-actions" role="navigation" aria-label="Acciones de encabezado">
@@ -30,6 +31,7 @@
   </header>
 
   <main class="main" id="mainContent">
+    <!-- Presentación en cuadros (cards) -->
     <section class="intro-grid" aria-label="Presentación">
       <article class="card">
         <h2>¿Qué es DICGLO?</h2>
@@ -52,31 +54,24 @@
       </article>
     </section>
 
-    <!-- Video de presentación -->
+    <!-- Video de presentación (src viene desde app.js) -->
     <section class="card video-card" aria-label="Video de presentación">
       <h2>Video de presentación</h2>
       <div id="videoContainer" class="video-frame">
-        <video id="presentationVideo" controls loading="lazy" title="Video de presentación" type="video/mp4"></video>
-        <div id="videoPlaceholder" class="muted">Cargando video... Si no aparece, verifica el enlace en app.js.</div>
+        <!-- El src del iframe se configura desde app.js (const VIDEO_IFRAME_SRC) -->
+        <iframe id="presentationVideo" src="" allowfullscreen loading="lazy" title="Video de presentación"></iframe>
+        <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace embebido en la constante <code>VIDEO_IFRAME_SRC</code> dentro de <strong>app.js</strong>.</div>
       </div>
     </section>
 
-    <!-- Área para materias dinámicas -->
-    <section id="subjectsContainer" class="content-card" aria-label="Áreas educativas">
-      <!-- Contenido dinámico aquí -->
-      <div class="subject-hint">
-        <p>Elige un área: Matemática o Lenguaje.</p>
-        <div class="quick-buttons">
-          <button class="subject-btn" data-subject="matematica">Matemática</button>
-          <button class="subject-btn" data-subject="lenguaje">Lenguaje</button>
-        </div>
-      </div>
-    </section>
-  </main>
+    <!-- Área principal donde se muestran las materias y contenedores dinámicos -->
+  
 
+  <!-- Panel del asistente (oculto por defecto; app.js lo maneja) -->
   <div id="voiceAssistantPanel" class="voice-panel hidden" aria-hidden="true">
     <div class="voice-controls">    
       <button id="closeChatBtn" class="control" style="display:none">Cerrar chat</button>
+      <!-- Nota: el estado visible del asistente se muestra ahora en el encabezado -->
     </div>
   </div>
 
@@ -87,6 +82,8 @@
   <script src="app.js"></script>
 </body>
 </html>
+
+
 
 
 
