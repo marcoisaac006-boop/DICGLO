@@ -1,7 +1,20 @@
 
-const VIDEO_IFRAME_SRC = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1754274776/WhatsApp_Video_2025-08-03_at_9.27.00_PM_xabtde.mp4"; // <-- PON TU ENLACE AQUÍ
+/**
+ * app.js - versión corregida (reemplazar completamente)
+ * - Usa <video> en lugar de iframe para MP4.
+ * - Manejo robusto de speechSynthesis.getVoices() y SpeechRecognition.
+ * - Mensajes claros y defensivos (no lanza errores si falta API).
+ */
 
-// --- Datos de materias y temas
+/* ===========================
+   CONFIG
+   =========================== */
+// Pon aquí tu enlace MP4 (o deja vacío para que aparezca el placeholder)
+const VIDEO_SRC = "https://res.cloudinary.com/dwzwa3gp0/video/upload/v1754274776/WhatsApp_Video_2025-08-03_at_9.27.00_PM_xabtde.mp4";
+
+/* ===========================
+   DATOS (no cambiar salvo quieras)
+   =========================== */
 const SUBJECTS = {
   matematica: {
     title: 'Matemática',
@@ -21,50 +34,65 @@ const SUBJECTS = {
   }
 };
 
-// --- Elementos globales y snapshot del HOME para restaurar
+/* ===========================
+   SELECTORES / ESTADO
+   =========================== */
 const main = document.querySelector('main');
 let HOME_HTML = main ? main.innerHTML : '';
 
-// Ajustar el iframe del video según la constante interna
+/* ===========================
+   VIDEO: asignar <video> correctamente
+   =========================== */
 function setPresentationVideo() {
-  const pv = document.getElementById('presentationVideo');
+  const videoEl = document.getElementById('presentationVideo');
+  const sourceEl = document.getElementById('presentationVideoSource');
   const placeholder = document.getElementById('videoPlaceholder');
-  if (!pv) return;
-  if (VIDEO_IFRAME_SRC && VIDEO_IFRAME_SRC.trim() !== '') {
-    pv.src = VIDEO_IFRAME_SRC;
+  if (!videoEl || !sourceEl) return;
+
+  if (VIDEO_SRC && VIDEO_SRC.trim() !== '') {
+    sourceEl.src = VIDEO_SRC;
+    try { videoEl.load(); } catch (e) { /* ignore */ }
     if (placeholder) placeholder.style.display = 'none';
   } else {
-    pv.src = '';
+    sourceEl.src = '';
+    try { videoEl.load(); } catch (e) { /* ignore */ }
     if (placeholder) placeholder.style.display = 'block';
   }
 }
-setPresentationVideo();
 
-// --- utilidades
+/* ===========================
+   UTILIDADES
+   =========================== */
 function normalizeText(s) {
   return s ? s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase() : '';
 }
 
-// Enlaza los botones rápidos que están en la página de inicio
+function updateStatus(text) {
+  const s = document.getElementById('vaStatus');
+  if (s) s.textContent = text;
+}
+
+/* ===========================
+   RENDER / NAVEGACIÓN
+   =========================== */
 function bindQuickButtons(){
   document.querySelectorAll('.subject-btn').forEach(b => {
-    b.removeEventListener('click', quickBtnHandler);
+    // remover listener anterior defensivamente
+    try { b.removeEventListener('click', quickBtnHandler); } catch (e) {}
     b.addEventListener('click', quickBtnHandler);
   });
 }
 
 function quickBtnHandler(e){
-  const sub = e.currentTarget.dataset.subject;
+  const sub = e.currentTarget ? e.currentTarget.dataset.subject : null;
   if (sub) navigateToSubject(sub);
-  // CLICK: No hablar cuando el usuario hace click.
 }
-bindQuickButtons();
 
-// --- RENDER: reemplaza el contenido principal por una "página" de resultados de la materia
+// Renderizar la "página" completa de la materia
 function renderSubjectFullPage(key) {
   const sub = SUBJECTS[key];
-  if (!sub) return;
-  // construir HTML de la nueva "página"
+  if (!sub || !main) return;
+
   const topicsHtml = sub.topics.map(t => {
     return `<div class="topic-card">
       <h3>${t.title}</h3>
@@ -88,35 +116,26 @@ function renderSubjectFullPage(key) {
     </section>
   `;
 
-  // reemplazamos TODO el contenido del <main> (inicio desaparece visualmente)
-  if (main) main.innerHTML = html;
+  main.innerHTML = html;
 
-  // bind a botones del nuevo DOM
   const volver = document.getElementById('volverBtn');
   if (volver) {
     volver.addEventListener('click', () => {
-      // CLICK: al presionar Volver no debe hablar. Redirigimos a la página de selección.
       renderSelectionPage();
-      // no speak()
     });
   }
 
-  // Bind a cada "Abrir" de tema
-  if (main) main.querySelectorAll('.open-topic').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const title = btn.dataset.title;
-      // CLICK: no hablar aquí, sólo mostrar/abrir.
+  main.querySelectorAll('.open-topic').forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      const title = ev.currentTarget.dataset.title;
       alert(`Abriste: ${title}\nAquí puedes añadir ejercicios para ${title}.`);
     });
   });
 
-  // guardar estado en el historial para que se comporte como "nueva página"
-  try {
-    history.pushState({subject:key}, '', `#${key}`);
-  } catch (e) { /* ignore */ }
+  try { history.pushState({subject:key}, '', `#${key}`); } catch (e) {}
 }
 
-// --- NUEVO: renderiza la "página de selección" que aparece justo después de saludar al usuario por nombre
+// Renderiza la página de selección (saludo + botones)
 function renderSelectionPage() {
   const html = `
     <section class="card selection-page">
@@ -136,56 +155,47 @@ function renderSelectionPage() {
     </section>
   `;
 
-  if (main) main.innerHTML = html;
+  if (!main) return;
+  main.innerHTML = html;
 
-  // bind: botones grandes de materia
-  if (main) {
-    main.querySelectorAll('.subject-btn').forEach(b => {
-      b.addEventListener('click', (e) => {
-        const sub = e.currentTarget.dataset.subject;
-        if (sub) {
-          navigateToSubject(sub);
-          // CLICK: no pauseRecognitionWhileSpeaking, no speak
-        }
-      });
+  // bind botones
+  main.querySelectorAll('.subject-btn').forEach(b => {
+    b.addEventListener('click', (e) => {
+      const sub = e.currentTarget.dataset.subject;
+      if (sub) navigateToSubject(sub);
     });
-  }
+  });
 
-  // bind: volver al inicio
   const sv = document.getElementById('seleccionVolver');
   if (sv) sv.addEventListener('click', () => {
     goHome();
-    // CLICK: no speak()
   });
 
-  // push state para que el back funcione
-  try {
-    history.pushState({selection:true}, '', '#selection');
-  } catch(e){}
+  try { history.pushState({selection:true}, '', '#selection'); } catch(e){}
 }
 
-// Restaura la página de inicio guardada en HOME_HTML
+// Restaurar home guardado
 function goHome(pushHistory = true) {
-  if (main) main.innerHTML = HOME_HTML;
+  if (!main) return;
+  main.innerHTML = HOME_HTML;
   // reconfigurar video y botones rápidos
   setPresentationVideo();
-  bindQuickButtons();
+  // espera microtick para enlazar botones que acaben de crearse
+  setTimeout(bindQuickButtons, 40);
 
   if (pushHistory) {
-    try {
-      history.pushState({}, '', location.pathname.replace(location.hash,''));
-    } catch(e){}
+    try { history.pushState({}, '', location.pathname.replace(location.hash,'')); } catch(e){}
   }
 }
 
-// Navegación por voz o click hacia una materia
 function navigateToSubject(key) {
   if (!SUBJECTS[key]) return;
   renderSubjectFullPage(key);
 }
 
-// --- Asistente de voz (adaptado)
-// Verificaciones de compatibilidad
+/* ===========================
+   ASISTENTE DE VOZ (SpeechRecognition + speechSynthesis)
+   =========================== */
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
 const synth = window.speechSynthesis || null;
 
@@ -194,18 +204,36 @@ let recognitionActive = false;
 let userName = null;
 let expectingName = true;
 
-// cargar voces
+// VOCES: preferencia y carga robusta
 let preferredVoice = null;
-function loadVoices() {
-  if (!synth) return;
-  const voices = synth.getVoices();
-  if (!voices || voices.length === 0) return;
-  preferredVoice = voices.find(v => (v.name || '').toLowerCase().includes('google') && (v.lang || '').startsWith('es'))
+function choosePreferredVoice(voices) {
+  return voices.find(v => (v.name || '').toLowerCase().includes('google') && (v.lang || '').startsWith('es'))
     || voices.find(v => (v.lang || '').startsWith('es'))
     || voices[0];
 }
-if (synth) { synth.onvoiceschanged = loadVoices; loadVoices(); }
 
+function loadVoices() {
+  if (!synth) return;
+  let voices = synth.getVoices();
+  if (voices && voices.length > 0) {
+    preferredVoice = choosePreferredVoice(voices);
+    return;
+  }
+  // Reintentar ligeramente después (algunos navegadores llenan voces asíncronamente)
+  setTimeout(() => {
+    voices = synth.getVoices();
+    if (voices && voices.length > 0) {
+      preferredVoice = choosePreferredVoice(voices);
+    }
+  }, 250);
+}
+
+if (synth) {
+  synth.onvoiceschanged = loadVoices;
+  loadVoices();
+}
+
+// speak: devuelve Promise para poder esperar
 function speak(text, opts = {}) {
   return new Promise((resolve) => {
     if (!synth) return resolve();
@@ -215,7 +243,7 @@ function speak(text, opts = {}) {
       if (preferredVoice) u.voice = preferredVoice;
       u.onend = () => resolve();
       u.onerror = () => resolve();
-      synth.cancel();
+      try { synth.cancel(); } catch (e) {}
       synth.speak(u);
     } catch (e) { resolve(); }
   });
@@ -230,8 +258,9 @@ function createRecognition() {
 
   recognition.onstart = () => { recognitionActive = true; updateStatus('Escuchando...'); };
   recognition.onend = () => {
+    // si debe seguir activo, reiniciamos
     if (recognitionActive) {
-      try { recognition.start(); } catch (e) {}
+      try { recognition.start(); } catch (e) { updateStatus('Inactivo'); }
     } else updateStatus('Inactivo');
   };
   recognition.onerror = (evt) => {
@@ -240,79 +269,76 @@ function createRecognition() {
   };
 
   recognition.onresult = async (event) => {
-    const texto = (event.results[event.results.length - 1][0].transcript || '').trim();
-    const lower = normalizeText(texto);
-    console.log('Reconocido:', texto);
+    try {
+      const last = event.results[event.results.length - 1];
+      const texto = (last && last[0] && last[0].transcript) ? last[0].transcript.trim() : '';
+      const lower = normalizeText(texto);
+      console.log('Reconocido:', texto);
 
-    // Si aún no tenemos nombre, intentamos capturarlo
-    if (!userName) {
-      let nombre = null;
-      if (lower.includes('me llamo')) nombre = texto.split(/me llamo/i)[1] || '';
-      else if (lower.includes('mi nombre es')) nombre = texto.split(/mi nombre es/i)[1] || '';
-      else if (lower.match(/^soy\s+/i)) nombre = texto.replace(/^soy\s+/i, '');
-      else {
-        const palabras = lower.split(/\s+/).filter(Boolean);
-        if (expectingName && palabras.length <= 4) nombre = texto;
+      // Capturar nombre si no hay userName
+      if (!userName) {
+        let nombre = null;
+        if (lower.includes('me llamo')) nombre = texto.split(/me llamo/i)[1] || '';
+        else if (lower.includes('mi nombre es')) nombre = texto.split(/mi nombre es/i)[1] || '';
+        else if (lower.match(/^soy\s+/i)) nombre = texto.replace(/^soy\s+/i, '');
+        else {
+          const palabras = lower.split(/\s+/).filter(Boolean);
+          if (expectingName && palabras.length <= 4) nombre = texto;
+        }
+
+        if (nombre) {
+          nombre = nombre.replace(/[.,!?]$/g,'').trim();
+          nombre = nombre.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+          userName = nombre;
+          expectingName = false;
+          const reply = 'Hola ' + userName + '. ¿Qué te gustaría aprender hoy? Aquí tienes la lista de áreas disponibles.';
+          await pauseRecognitionWhileSpeaking(reply);
+          renderSelectionPage();
+          return;
+        }
       }
 
-      if (nombre) {
-        nombre = nombre.replace(/[.,!?]$/g,'').trim();
-        nombre = nombre.split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-        userName = nombre;
-        expectingName = false;
-        // RESPUESTA por voz: abrir la página de selección
-        const reply = 'Hola ' + userName + '. Qué te gustaría  aprender  hoy. Aquí tienes la listas de areas disponibles.';
-        await pauseRecognitionWhileSpeaking(reply);
+      // Comandos de voz -> abrir selección
+      if (lower.includes('areas disponibles') || lower.includes('áreas disponibles')) {
         renderSelectionPage();
+        await pauseRecognitionWhileSpeaking('Estas son las áreas disponibles');
         return;
       }
-    }
 
-    // Detectar frase para mostrar la página de selección (áreas disponibles)
-    if (lower.includes('areas disponibles') || lower.includes('áreas disponibles')) {
-      renderSelectionPage();
-      await pauseRecognitionWhileSpeaking('Estas son las áreas disponibles');
-      return;
-    }
+      // Detectar materias por palabra clave
+      for (const key of Object.keys(SUBJECTS)) {
+        const titleNorm = normalizeText(SUBJECTS[key].title);
+        if (lower.includes(key) || lower.includes(titleNorm)) {
+          navigateToSubject(key);
+          await pauseRecognitionWhileSpeaking(`Perfecto. Estos son los temas disponibles del área de ${SUBJECTS[key].title}`);
+          return;
+        }
+      }
 
-    // Detectar materias por palabra clave
-    for (const key of Object.keys(SUBJECTS)) {
-      const titleNorm = normalizeText(SUBJECTS[key].title);
-      if (lower.includes(key) || lower.includes(titleNorm)) {
-        navigateToSubject(key);
-        await pauseRecognitionWhileSpeaking(`Perfecto. Estos son los temas disponibles del área de ${SUBJECTS[key].title}`);
+      if (lower.includes('matemat') || lower.includes('mate')) {
+        navigateToSubject('matematica');
+        await pauseRecognitionWhileSpeaking('Perfecto. Estos son los temas disponibles de matemática');
         return;
       }
-    }
+      if (lower.includes('lengua') || lower.includes('lenguaje') || lower.includes('gramatic')) {
+        navigateToSubject('lenguaje');
+        await pauseRecognitionWhileSpeaking('Perfecto. Estos son los temas disponibles de lenguaje');
+        return;
+      }
 
-    // frases compuestas y sinónimos simples
-    if (lower.includes('matemat') || lower.includes('mate')) {
-      navigateToSubject('matematica');
-      await pauseRecognitionWhileSpeaking('Perfecto. Estos son los temas disponibles de matemática');
-      return;
+      // Volver al inicio
+      if (lower.includes('volver') || lower.includes('inicio')) {
+        goHome();
+        await pauseRecognitionWhileSpeaking('Volviendo al inicio');
+        return;
+      }
+      // Si no coincide nada, no hacemos speak
+    } catch (e) {
+      console.error('Error procesando resultado de reconocimiento:', e);
     }
-    if (lower.includes('lengua') || lower.includes('lenguaje') || lower.includes('gramatic')) {
-      navigateToSubject('lenguaje');
-      await pauseRecognitionWhileSpeaking('Perfecto. Estos son los temas disponibles de lenguaje');
-      return;
-    }
-
-    // volver al inicio (voz)
-    if (lower.includes('volver') || lower.includes('inicio')) {
-      goHome();
-      await pauseRecognitionWhileSpeaking('Volviendo al inicio');
-      return;
-    }
-
-    // si no coincide nada, no hacemos speak
   };
 
   return recognition;
-}
-
-function updateStatus(text){
-  const s = document.getElementById('vaStatus');
-  if (s) s.textContent = text;
 }
 
 async function pauseRecognitionWhileSpeaking(textToSay) {
@@ -328,32 +354,29 @@ async function pauseRecognitionWhileSpeaking(textToSay) {
       recognition.start();
       recognitionActive = true;
       updateStatus('Escuchando...');
-    } catch (e) { console.warn('No se pudo reanudar reconocimiento:', e); }
+    } catch (e) { console.warn('No se pudo reanudar reconocimiento:', e); updateStatus('Inactivo'); }
   } else updateStatus('Inactivo');
 }
 
-// openChat ahora acepta opciones para controlar si debe hablar al abrir (útil para distinguir click vs voz)
 function openChat({ speakOnOpen = true } = {}) {
   if (!SpeechRecognition || !synth) {
     updateStatus('Tu navegador no soporta reconocimiento o síntesis de voz.');
     return;
   }
   if (!recognition) recognition = createRecognition();
-  try { recognition.start(); recognitionActive = true; updateStatus('Escuchando...'); } catch (e) {}
+  try { recognition.start(); recognitionActive = true; updateStatus('Escuchando...'); } catch (e) { console.warn('No se pudo iniciar reconocimiento:', e); }
 
-  // Actualizar etiqueta del botón único (voiceToggle)
   const voiceBtn = document.getElementById('voiceToggle');
   if (voiceBtn) {
     voiceBtn.textContent = 'Cerrar chat';
     voiceBtn.setAttribute('aria-pressed','true');
   }
 
-  // Mostrar panel si existe (puede contener controles adicionales)
   const panel = document.getElementById('voiceAssistantPanel');
   if (panel) { panel.classList.remove('hidden'); panel.setAttribute('aria-hidden','false'); }
 
-  // Sólo hablar si la apertura fue por VOZ (speakOnOpen === true)
   if (speakOnOpen) {
+    // preguntar nombre
     pauseRecognitionWhileSpeaking('Hola, bienvenido, ¿cuál es tu nombre?');
   }
 }
@@ -364,7 +387,7 @@ function closeChat() {
     try { recognition.stop(); } catch (e) {}
     try { recognition.abort(); } catch (e) {}
   }
-  try { synth.cancel(); } catch (e) {}
+  try { if (synth) synth.cancel(); } catch (e) {}
 
   const voiceBtn = document.getElementById('voiceToggle');
   if (voiceBtn) {
@@ -380,16 +403,18 @@ function closeChat() {
   expectingName = true;
 }
 
-// --- Limpieza y nuevo comportamiento: ocultar botones legacy (si existen) y usar solo el botón superior
+/* ===========================
+   INICIALIZACIÓN UI / BOTONES
+   =========================== */
+// Ocultar botones legacy si existen
 const openBtnLegacy = document.getElementById('openChatBtn');
 const closeBtnLegacy = document.getElementById('closeChatBtn');
 if (openBtnLegacy) openBtnLegacy.style.display = 'none';
 if (closeBtnLegacy) closeBtnLegacy.style.display = 'none';
 
-// Configuración del botón único superior (#voiceToggle)
+// Configuración del botón superior
 const voiceToggle = document.getElementById('voiceToggle');
 if (voiceToggle) {
-  // inicializar etiqueta
   voiceToggle.textContent = 'Abrir chat';
   voiceToggle.setAttribute('aria-pressed','false');
 
@@ -397,13 +422,34 @@ if (voiceToggle) {
     if (recognitionActive) {
       closeChat();
     } else {
-      // CLICK: abrir por click SÍ debe hablar (excepción solicitada)
+      // CLICK: abrir por click (se hablará)
       openChat({ speakOnOpen: true });
     }
   });
 }
 
-// --- Historial: manejar back/forward
+// Enlace inicial de botones rápidos (si existen en HOME)
+setTimeout(() => {
+  try { bindQuickButtons(); } catch (e) {}
+}, 80);
+
+/* ===========================
+   COMPATIBILIDAD / ADVERTENCIAS
+   =========================== */
+function showSupportWarnings() {
+  const missing = [];
+  if (!SpeechRecognition) missing.push('reconocimiento de voz (SpeechRecognition)');
+  if (!synth) missing.push('síntesis de voz (speechSynthesis)');
+  if (missing.length) {
+    console.warn('Faltan APIs en este navegador:', missing.join(', '));
+    updateStatus('Tu navegador no soporta ' + missing.join(' y ') + '. Prueba Chrome/Edge en HTTPS.');
+  }
+}
+showSupportWarnings();
+
+/* ===========================
+   HISTORIAL (back/forward)
+   =========================== */
 window.addEventListener('popstate', (e) => {
   const state = e.state;
   if (state && state.subject) {
@@ -414,6 +460,11 @@ window.addEventListener('popstate', (e) => {
     goHome(false);
   }
 });
+
+/* ===========================
+   INICIAL: configurar video y guardar HOME_HTML (ya hecho arriba)
+   =========================== */
+try { setPresentationVideo(); } catch (e) { console.warn('No se pudo configurar video al inicio:', e); }
 
 
 
