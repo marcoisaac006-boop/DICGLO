@@ -24,8 +24,8 @@
 
       <div class="header-actions" role="navigation" aria-label="Acciones de encabezado">
         <button id="voiceToggle" class="voice-toggle" title="Asistente de voz (activar)">
-          🎤 Asistente
-        </button>
+  Abrir chat
+</button>
       </div>
     </div>
   </header>
@@ -54,15 +54,16 @@
       </article>
     </section>
 
-    <!-- Video de presentación (src viene desde app.js) -->
-    <section class="card video-card" aria-label="Video de presentación">
-      <h2>Video de presentación</h2>
-      <div id="videoContainer" class="video-frame">
-        <!-- El src del iframe se configura desde app.js (const VIDEO_IFRAME_SRC) -->
-        <iframe id="presentationVideo" src="" allowfullscreen loading="lazy" title="Video de presentación"></iframe>
-        <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace embebido en la constante <code>VIDEO_IFRAME_SRC</code> dentro de <strong>app.js</strong>.</div>
-      </div>
-    </section>
+ <section class="card video-card" aria-label="Video de presentación">
+  <h2>Video de presentación</h2>
+  <div id="videoContainer" class="video-frame">
+    <video id="presentationVideo" controls title="Video de presentación" style="width:100%; height:100%;">
+      <source src="" type="video/mp4">
+      Tu navegador no soporta video HTML5.
+    </video>
+    <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace de video MP4 en la constante <code>VIDEO_IFRAME_SRC</code> dentro de <strong>app.js</strong>.</div>
+  </div>
+</section>
 
     <!-- Área principal donde se muestran las materias y contenedores dinámicos -->
   
@@ -82,6 +83,7 @@
   <script src="app.js"></script>
 </body>
 </html>
+
 
 
 
