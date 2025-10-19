@@ -226,16 +226,18 @@ function createRecognition() {
   recognition.lang = 'es-ES';
   recognition.continuous = true;
   recognition.interimResults = false;
-
-  recognition.onstart = () => { recognitionActive = true; updateStatus('Escuchando...'); };
+  recognition.maxAlternatives = 1;  // Mejora precisión
+  recognition.onstart = () => { recognitionActive = true; updateStatus('Escuchando...'); console.log('Recognition started'); };
   recognition.onend = () => {
     if (recognitionActive) {
-      try { recognition.start(); } catch (e) {}
+      try { recognition.start(); } catch (e) { console.error('Restart failed:', e); }
     } else updateStatus('Inactivo');
   };
   recognition.onerror = (evt) => {
     console.error('SpeechRecognition error', evt);
-    updateStatus('Error: ' + (evt.error || 'desconocido'));
+    if (evt.error === 'no-speech') updateStatus('No se detectó voz');
+    else if (evt.error === 'permission') alert('Permite el micrófono en el navegador para usar voz.');
+    else updateStatus('Error: ' + (evt.error || 'desconocido'));
   };
 
   recognition.onresult = async (event) => {
@@ -334,7 +336,7 @@ async function pauseRecognitionWhileSpeaking(textToSay) {
 // openChat ahora acepta opciones para controlar si debe hablar al abrir (útil para distinguir click vs voz)
 function openChat({ speakOnOpen = true } = {}) {
   if (!SpeechRecognition || !synth) {
-    updateStatus('Tu navegador no soporta reconocimiento o síntesis de voz.');
+    updateStatus('Tu navegador no soporta reconocimiento o síntesis de voz. Prueba Chrome.');
     return;
   }
   if (!recognition) recognition = createRecognition();
@@ -413,6 +415,7 @@ window.addEventListener('popstate', (e) => {
     goHome(false);
   }
 });
+
 
 
 
