@@ -3,84 +3,108 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <meta name="theme-color" content="#ffffff" />
-  <title>DICGLO — Plataforma educativaS</title>
-
-  <!-- Fuente moderna -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-
+  <title>Stephen Toulmin</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="site-header" role="banner">
-    <div class="brand">
-      <h1>DICGLO</h1>
-      <p class="tag">Plataforma educativa — explora, aprende y practica</p>
-    </div>
-
-    <div class="header-right">
-      <!-- Estado visible del asistente: app.js actualizará este texto (id vaStatus) -->
-      <div id="vaStatus" class="assistant-status" aria-live="polite">Inactivo</div>
-
-      <div class="header-actions" role="navigation" aria-label="Acciones de encabezado">
-        <button id="voiceToggle" class="voice-toggle" title="Asistente de voz (activar)">
-  Abrir chat
-</button>
-      </div>
-    </div>
+  <header>
+    <h1>Desarrollado por el grupo 2</h1>
+    <button id="creditsBtn" aria-controls="creditsSection" aria-expanded="false">Créditos</button>
   </header>
 
-  <main class="main" id="mainContent">
-    <!-- Presentación en cuadros (cards) -->
-    <section class="intro-grid" aria-label="Presentación">
-      <article class="card">
-        <h2>¿Qué es DICGLO?</h2>
-        <p>DICGLO es una plataforma educativa para explorar áreas como Matemática y Lenguaje con ejercicios interactivos y recursos multimedia.</p>
-      </article>
-
-      <article class="card">
-        <h2>Cómo funciona</h2>
-        <p>Usa el asistente de voz (arriba a la derecha) o los botones para elegir un área. Encontrarás contenedores con ejercicios y explicaciones.</p>
-      </article>
-
-      <article class="card">
-        <h2>Recursos</h2>
-        <p>Incluye videos explicativos y ejercicios. El video de presentación se configura internamente en el código.</p>
-      </article>
-
-      <article class="card">
-        <h2>Accesibilidad</h2>
-        <p>El asistente responde por voz y la interfaz es simple, con textos legibles y colores suaves.</p>
-      </article>
-    </section>
-
- <section class="card video-card" aria-label="Video de presentación">
-  <h2>Video de presentación</h2>
-  <div id="videoContainer" class="video-frame">
-    <video id="presentationVideo" controls title="Video de presentación" style="width:100%; height:100%;">
-      <source src="" type="video/mp4">
-      Tu navegador no soporta video HTML5.
-    </video>
-    <div id="videoPlaceholder" class="muted">Si no se ve el video, coloca tu enlace de video MP4 en la constante <code>VIDEO_IFRAME_SRC</code> dentro de <strong>app.js</strong>.</div>
-  </div>
-</section>
-
-    <!-- Área principal donde se muestran las materias y contenedores dinámicos -->
-  
-
-  <!-- Panel del asistente (oculto por defecto; app.js lo maneja) -->
-  <div id="voiceAssistantPanel" class="voice-panel hidden" aria-hidden="true">
-    <div class="voice-controls">    
-      <button id="closeChatBtn" class="control" style="display:none">Cerrar chat</button>
-      <!-- Nota: el estado visible del asistente se muestra ahora en el encabezado -->
+  <main id="mainContent">
+    <div class="hero">
+      <img src="https://pressblog.uchicago.edu/wp-content/uploads/photo_1003771.jpg"
+           alt="Foto de Stephen Toulmin"
+           class="hero-image" />
+      <div class="hero-info">
+        <h2>Stephen Toulmin 📚</h2>
+        <p>Filósofo británico influyente en la argumentación y la ética. 🧠</p>
+      </div>
     </div>
-  </div>
 
-  <footer class="site-footer" role="contentinfo">
-    <p>© DICGLO — Plataforma educativa</p>
-  </footer>
+    <div class="accordion" id="accordion">
+      <!-- Cada item mantiene su estructura; JS añade la interacción -->
+      <article class="accordion-item">
+        <button class="accordion-header">Infancia y Juventud <span class="icon">+</span></button>
+        <div class="accordion-content">
+          <p>Stephen Edelston Toulmin nació el 25 de marzo de 1922 en Londres, Inglaterra, hijo de Geoffrey Edelson Toulmin y Doris Holman Toulmin. Estudió matemáticas y física en King's College, Cambridge, donde obtuvo su licenciatura en 1942. Durante la Segunda Guerra Mundial, trabajó como oficial científico junior en el Ministerio de Producción de Aeronaves, involucrado en la investigación de radar en la Estación de Investigación de Telecomunicaciones en Malvern (más tarde el Royal Radar Establishment), donde colaboró con figuras como Alan Hodgkin. Posteriormente, sirvió en el Cuartel General Supremo de la Fuerza Expedicionaria Aliada en Alemania. 👶🎓</p>
+          <p>Después de la guerra, regresó a Cambridge para estudiar filosofía, influenciado por Ludwig Wittgenstein, obteniendo una maestría en 1947 y un doctorado en 1948, con una disertación sobre la ética titulada "An Examination of the Place of Reason in Ethics" (1950). Esta transición de las ciencias físicas a la filosofía marcó el inicio de su carrera académica, combinando su formación científica con intereses filosóficos. 🔬➡️🤔</p>
+          <button class="close-btn">Cerrar</button>
+        </div>
+      </article>
 
-  <script src="app.js"></script>
+      <article class="accordion-item">
+        <button class="accordion-header">Educación <span class="icon">+</span></button>
+        <div class="accordion-content">
+          <p>Toulmin obtuvo su título de Bachelor of Arts en King's College, Cambridge, en 1943, donde fue un Apóstol de Cambridge. Poco después, fue contratado por el Ministerio de Producción de Aeronaves como oficial científico junior, primero en la Estación de Investigación y Desarrollo de Radar de Malvern y luego en el Cuartel General Supremo de la Fuerza Expedicionaria Aliada en Alemania. Al final de la Segunda Guerra Mundial, regresó a Inglaterra para obtener un Master of Arts en 1947 y un PhD en filosofía de la Universidad de Cambridge, publicando posteriormente su disertación como "An Examination of the Place of Reason in Ethics" (1950). Mientras estaba en Cambridge, Toulmin entró en contacto con el filósofo austriaco Ludwig Wittgenstein, cuya examen de la relación entre los usos y los significados del lenguaje moldeó gran parte de su propio trabajo. 🎓</p>
+          <button class="close-btn">Cerrar</button>
+        </div>
+      </article>
+
+      <article class="accordion-item">
+        <button class="accordion-header">Carrera <span class="icon">+</span></button>
+        <div class="accordion-content">
+          <p>Después de graduarse de Cambridge, Toulmin fue nombrado Profesor Universitario en Filosofía de la Ciencia en la Universidad de Oxford de 1949 a 1954, período durante el cual escribió su segundo libro, "The Philosophy of Science: an Introduction" (1953). Poco después, fue nombrado Profesor Visitante de Historia y Filosofía de la Ciencia en la Universidad de Melbourne en Australia de 1954 a 1955, después de lo cual regresó a Inglaterra y sirvió como Profesor y Jefe del Departamento de Filosofía en la Universidad de Leeds de 1955 a 1959. Mientras estaba en Leeds, publicó uno de sus libros más influyentes en el campo de la retórica, "The Uses of Argument" (1958), que investigó las fallas de la lógica tradicional. 💼</p>
+          <p>... (texto recortado para brevedad, mantén tu contenido completo aquí) ...</p>
+          <button class="close-btn">Cerrar</button>
+        </div>
+      </article>
+
+      <article class="accordion-item">
+        <button class="accordion-header">Obras Principales <span class="icon">+</span></button>
+        <div class="accordion-content">
+          <ul>
+            <li>An Examination of the Place of Reason in Ethics (1950) 📘</li>
+            <li>The Philosophy of Science: An Introduction (1953) 📘</li>
+            <li>The Uses of Argument (1958) 📘</li>
+            <li>Metaphysical Beliefs, Three Essays (1957) 📘</li>
+            <li>Foresight and Understanding: An Enquiry into the Aims of Science (1961) 📘</li>
+            <li>The Fabric of the Heavens (1961) 📘</li>
+            <li>The Architecture of Matter (1962) 📘</li>
+            <li>The Discovery of Time (1965) 📘</li>
+            <li>Human Understanding: The Collective Use and Evolution of Concepts (1972) 📘</li>
+            <li>Wittgenstein's Vienna (1973) 📘</li>
+            <li>The Return to Cosmology (1985) 📘</li>
+            <li>The Abuse of Casuistry (1988) 📘</li>
+            <li>Cosmopolis: The Hidden Agenda of Modernity (1990) 📘</li>
+            <li>Return to Reason (2001) 📘</li>
+          </ul>
+          <button class="close-btn">Cerrar</button>
+        </div>
+      </article>
+
+      <article class="accordion-item">
+        <button class="accordion-header">Contribuciones Filosóficas y al Modelo de Argumentación <span class="icon">+</span></button>
+        <div class="accordion-content">
+          <p>Toulmin trabajó en la filosofía del siglo XX dentro de la escuela analítica, con intereses principales en meta-filosofía, argumentación, ética, retórica y modernidad. Sus ideas notables incluyen el modelo Toulmin (método Toulmin) y el enfoque de buenas razones. 🤔</p>
+          <button class="close-btn">Cerrar</button>
+        </div>
+      </article>
+
+      <article class="accordion-item">
+        <button class="accordion-header">Vida Personal y Muerte <span class="icon">+</span></button>
+        <div class="accordion-content">
+          <p>Toulmin se casó dos veces y tuvo cuatro hijos. Murió el 4 de diciembre de 2009 en Los Ángeles, California. 👨‍👩‍👧‍👦</p>
+          <button class="close-btn">Cerrar</button>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <section id="creditsSection" class="hidden" aria-hidden="true">
+    <div class="credits-content">
+      <img src="" alt="" id="creditsImage" style="display:none" />
+      <div id="creditsList" class="credits-list">
+        <!-- La lista de créditos se renderiza dinámicamente -->
+      </div>
+    </div>
+    <button id="backBtn">Volver</button>
+  </section>
+
+  <button id="backToTop" aria-label="Volver arriba">↑ Volver arriba</button>
+
+  <script src="script.js"></script>
 </body>
 </html>
 
