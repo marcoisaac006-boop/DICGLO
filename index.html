@@ -1,115 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Stephen Toulmin</title>
+  <title>Pupiletra — Numbers in English</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <header>
-    <h1>Desarrollado por el grupo 2</h1>
-    <button id="creditsBtn" aria-controls="creditsSection" aria-expanded="false">Créditos</button>
+    <h1>Pupiletra: Numbers in English</h1>
+    <p>Selecciona las letras arrastrando para formar las palabras. Cada palabra encontrada vale <strong>1 punto</strong>.</p>
   </header>
+  <main>
+    <!-- Página principal (sopa de letras) -->
+    <section id="mainGame">
+      <section class="controls">
+        <div class="score">Puntos: <span id="score">0</span> / <span id="total">0</span></div>
+        <button id="hint">Pista</button>
+        <button id="continue">Continuar → Traducciones</button>
+        <div id="message" class="message"></div>
+      </section>
+      <section class="game">
+        <div id="grid" class="grid" aria-label="Sopa de letras"></div>
+        <aside class="wordlist">
+          <h2>Palabras (en español)</h2>
+          <ul id="wordList"></ul>
+        </aside>
+      </section>
+      <section class="instructions">
+        <h3>Instrucciones</h3>
+        <p>Arrastra desde la primera letra hasta la última para seleccionar una palabra. Acepta direcciones horizontal, vertical y diagonal, en ambos sentidos.</p>
+      </section>
+    </section>
 
-  <main id="mainContent">
-    <div class="hero">
-      <img src="https://pressblog.uchicago.edu/wp-content/uploads/photo_1003771.jpg"
-           alt="Foto de Stephen Toulmin"
-           class="hero-image" />
-      <div class="hero-info">
-        <h2>Stephen Toulmin 📚</h2>
-        <p>Filósofo británico influyente en la argumentación y la ética. 🧠</p>
-      </div>
-    </div>
+    <!-- Página secundaria: juego de traducción -->
+    <section id="translateGame" class="hidden">
+      <section class="controls">
+        <div class="score">Puntos: <span id="transScore">0</span> / <span id="transTotal">0</span></div>
+        <button id="checkTranslations">Comprobar respuestas</button>
+        <button id="resetTranslations">Reiniciar traducciones</button>
+        <button id="back">← Volver al juego</button>
+        <div id="transMessage" class="message"></div>
+      </section>
+      <section class="translation-board" id="translationBoard" aria-live="polite">
+        <!-- Se llena por JS: filas de 5 palabras con inputs -->
+      </section>
+      <section class="instructions">
+        <h3>Instrucciones - Traducciones</h3>
+        <p>Escribe el significado en español de cada palabra en inglés. Cada traducción correcta vale <strong>1 punto</strong>. No importa mayúsculas/minúsculas. Puedes usar la forma más común (por ejemplo: <em>one hundred</em> → <em>cien</em>).</p>
+      </section>
+    </section>
 
-    <div class="accordion" id="accordion">
-      <!-- Cada item mantiene su estructura; JS añade la interacción -->
-      <article class="accordion-item">
-        <button class="accordion-header">Infancia y Juventud <span class="icon">+</span></button>
-        <div class="accordion-content">
-          <p>Stephen Edelston Toulmin nació el 25 de marzo de 1922 en Londres, Inglaterra, hijo de Geoffrey Edelson Toulmin y Doris Holman Toulmin. Estudió matemáticas y física en King's College, Cambridge, donde obtuvo su licenciatura en 1942. Durante la Segunda Guerra Mundial, trabajó como oficial científico junior en el Ministerio de Producción de Aeronaves, involucrado en la investigación de radar en la Estación de Investigación de Telecomunicaciones en Malvern (más tarde el Royal Radar Establishment), donde colaboró con figuras como Alan Hodgkin. Posteriormente, sirvió en el Cuartel General Supremo de la Fuerza Expedicionaria Aliada en Alemania. 👶🎓</p>
-          <p>Después de la guerra, regresó a Cambridge para estudiar filosofía, influenciado por Ludwig Wittgenstein, obteniendo una maestría en 1947 y un doctorado en 1948, con una disertación sobre la ética titulada "An Examination of the Place of Reason in Ethics" (1950). Esta transición de las ciencias físicas a la filosofía marcó el inicio de su carrera académica, combinando su formación científica con intereses filosóficos. 🔬➡️🤔</p>
-          <button class="close-btn">Cerrar</button>
+    <!-- La sección de Matemáticas se crea dinámicamente por JS (mathGame) -->
+
+    <!-- Nuevo: Animals (Drag & Drop) -->
+    <section id="animalsGame" class="hidden">
+      <section class="controls">
+        <div class="score">Puntos: <span id="animalsScore">0</span> / <span id="animalsTotal">0</span></div>
+        <button id="animalsCheck">Comprobar</button>
+        <button id="animalsReset">Reiniciar</button>
+        <button id="animalsBack">← Volver</button>
+        <div id="animalsMessage" class="message"></div>
+      </section>
+
+      <section class="animals-playground">
+        <div class="animals-row" id="animalsRow" aria-label="Animales (arrastrables)">
+          <!-- fichas generadas por JS -->
         </div>
-      </article>
 
-      <article class="accordion-item">
-        <button class="accordion-header">Educación <span class="icon">+</span></button>
-        <div class="accordion-content">
-          <p>Toulmin obtuvo su título de Bachelor of Arts en King's College, Cambridge, en 1943, donde fue un Apóstol de Cambridge. Poco después, fue contratado por el Ministerio de Producción de Aeronaves como oficial científico junior, primero en la Estación de Investigación y Desarrollo de Radar de Malvern y luego en el Cuartel General Supremo de la Fuerza Expedicionaria Aliada en Alemania. Al final de la Segunda Guerra Mundial, regresó a Inglaterra para obtener un Master of Arts en 1947 y un PhD en filosofía de la Universidad de Cambridge, publicando posteriormente su disertación como "An Examination of the Place of Reason in Ethics" (1950). Mientras estaba en Cambridge, Toulmin entró en contacto con el filósofo austriaco Ludwig Wittgenstein, cuya examen de la relación entre los usos y los significados del lenguaje moldeó gran parte de su propio trabajo. 🎓</p>
-          <button class="close-btn">Cerrar</button>
+        <div class="animals-targets" id="animalsTargets" aria-label="Casillas de destino">
+          <!-- casillas de destino (español) generadas por JS -->
         </div>
-      </article>
+      </section>
 
-      <article class="accordion-item">
-        <button class="accordion-header">Carrera <span class="icon">+</span></button>
-        <div class="accordion-content">
-          <p>Después de graduarse de Cambridge, Toulmin fue nombrado Profesor Universitario en Filosofía de la Ciencia en la Universidad de Oxford de 1949 a 1954, período durante el cual escribió su segundo libro, "The Philosophy of Science: an Introduction" (1953). Poco después, fue nombrado Profesor Visitante de Historia y Filosofía de la Ciencia en la Universidad de Melbourne en Australia de 1954 a 1955, después de lo cual regresó a Inglaterra y sirvió como Profesor y Jefe del Departamento de Filosofía en la Universidad de Leeds de 1955 a 1959. Mientras estaba en Leeds, publicó uno de sus libros más influyentes en el campo de la retórica, "The Uses of Argument" (1958), que investigó las fallas de la lógica tradicional. 💼</p>
-          <p>... (texto recortado para brevedad, mantén tu contenido completo aquí) ...</p>
-          <button class="close-btn">Cerrar</button>
-        </div>
-      </article>
+      <section class="instructions">
+        <h3>Instrucciones - Animals (arrastrar)</h3>
+        <p>Arrastra el nombre del animal en <strong>inglés</strong> hacia la casilla que muestra su traducción en <strong>español</strong>. Suelta para comprobar. Cada emparejamiento correcto vale <strong>1 punto</strong>.</p>
+      </section>
+    </section>
 
-      <article class="accordion-item">
-        <button class="accordion-header">Obras Principales <span class="icon">+</span></button>
-        <div class="accordion-content">
-          <ul>
-            <li>An Examination of the Place of Reason in Ethics (1950) 📘</li>
-            <li>The Philosophy of Science: An Introduction (1953) 📘</li>
-            <li>The Uses of Argument (1958) 📘</li>
-            <li>Metaphysical Beliefs, Three Essays (1957) 📘</li>
-            <li>Foresight and Understanding: An Enquiry into the Aims of Science (1961) 📘</li>
-            <li>The Fabric of the Heavens (1961) 📘</li>
-            <li>The Architecture of Matter (1962) 📘</li>
-            <li>The Discovery of Time (1965) 📘</li>
-            <li>Human Understanding: The Collective Use and Evolution of Concepts (1972) 📘</li>
-            <li>Wittgenstein's Vienna (1973) 📘</li>
-            <li>The Return to Cosmology (1985) 📘</li>
-            <li>The Abuse of Casuistry (1988) 📘</li>
-            <li>Cosmopolis: The Hidden Agenda of Modernity (1990) 📘</li>
-            <li>Return to Reason (2001) 📘</li>
-          </ul>
-          <button class="close-btn">Cerrar</button>
-        </div>
-      </article>
-
-      <article class="accordion-item">
-        <button class="accordion-header">Contribuciones Filosóficas y al Modelo de Argumentación <span class="icon">+</span></button>
-        <div class="accordion-content">
-          <p>Toulmin trabajó en la filosofía del siglo XX dentro de la escuela analítica, con intereses principales en meta-filosofía, argumentación, ética, retórica y modernidad. Sus ideas notables incluyen el modelo Toulmin (método Toulmin) y el enfoque de buenas razones. 🤔</p>
-          <button class="close-btn">Cerrar</button>
-        </div>
-      </article>
-
-      <article class="accordion-item">
-        <button class="accordion-header">Vida Personal y Muerte <span class="icon">+</span></button>
-        <div class="accordion-content">
-          <p>Toulmin se casó dos veces y tuvo cuatro hijos. Murió el 4 de diciembre de 2009 en Los Ángeles, California. 👨‍👩‍👧‍👦</p>
-          <button class="close-btn">Cerrar</button>
-        </div>
-      </article>
-    </div>
   </main>
-
-  <section id="creditsSection" class="hidden" aria-hidden="true">
-    <div class="credits-content">
-      <img src="" alt="" id="creditsImage" style="display:none" />
-      <div id="creditsList" class="credits-list">
-        <!-- La lista de créditos se renderiza dinámicamente -->
-      </div>
-    </div>
-    <button id="backBtn">Volver</button>
-  </section>
-
-  <button id="backToTop" aria-label="Volver arriba">↑ Volver arriba</button>
-
+  <footer>
+    <small>Basado en la imagen provista — números en inglés.</small>
+  </footer>
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
 
 
